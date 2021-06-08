@@ -16,7 +16,7 @@
 
 - [Leetcode 刷题笔记](https://github.com/jnpeng945/CS-LearningNotes/blob/master/算法/Leetcode%20刷题笔记.md)
 - [LeetCode 101 题](https://github.com/jnpeng945/CS-LearningNotes/blob/master/算法/LeetCode%20101.md)
-- [Queue & Stack_LeetBook](https://github.com/jnpeng945/CS-LearningNotes/blob/master/算法/Queue%20&%20Stack%20LeetBook.md)
+- [Queue Stack_LeetBook](https://github.com/jnpeng945/CS-LearningNotes/blob/master/算法/Queue%20Stack%20LeetBook.md)
 - [Bit 操作技巧](https://github.com/jnpeng945/CS-LearningNotes/blob/master/算法/Bit%20操作技巧.md)
 - [公司笔试真题](https://github.com/jnpeng945/CS-LearningNotes/blob/master/算法/公司笔试真题.md)
 - [牛客网IO练习](https://github.com/jnpeng945/CS-LearningNotes/blob/master/算法/牛客网IO练习.md)
