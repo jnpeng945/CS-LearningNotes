@@ -769,23 +769,179 @@ SELECT Concat(RTrim(name), ' (', RTrim(age), ')  ') AS stu_title FROM student OR
  SELECT id, quantity, item_price, quantity*item_price AS expanded_price FROM orderitems WHERE id = 1;
 ```
 
-<div align="center"> <img src="Figs/MySQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A_25" /> </div><br>
+<div align="center"> <img src="Figs/MySQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A_25" width="980"/> </div><br>
+
+# 第11章 使用数据处理函数
+
+### 11.2.1 文本处理函数
+
+```sql
+-- Upper()函数：小写转换为大写
+SELECT id, name, Upper(name) AS Name FROM student ORDER BY id;
+```
+
+<div align="center"> <img src="Figs/MySQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A_26" width="700"/> </div><br>
+
+<div align="center"> <img src="Figs/MySQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A_27" width="700"/> </div><br>
+
+<div align="center"> <img src="Figs/MySQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A_28" width="700"/> </div><br>
+
+:star: 表中 `SOUNDEX` ：将任何文本串转换为描述其语音表示的字母数字模式的算法。`SOUNDEX` 考虑了类似的发音字符和音节，使得能对串进行发音比较而不是字母比较。虽然 `SOUNDEX` 不是 SQL 概念，但 MySQL（就像多数 DBMS 一样）都提供对 `SOUNDEX ` 的支持。
+
+```sql
+-- Soundex() 函数，匹配所有发音类似于***的联系名
+```
+
+### 11.2.2 日期和时间处理函数
+
+- 用日期进行数据过滤；
+  - 日期格式必须为 yyyy-mm-dd，如 2021-06-08；
+
+:bulb: 如果需要日期，则使用 `Date()` 函数；需要使用时间，则使用 `Time()` 函数。
+
+```sql
+SELECT id, name, age FROM student WHERE Date(enroll_date) = '2021-06-08';
+-- 检索出 2021年6月入学的所有学生
+SELECT id, name, age FROM student WHERE Date(enroll_date) BETWEEN '2021-06-01' AND '2021-06-3O';
+-- 检索出 2021年6月入学的所有学生，不需要记住每个月有多少天也不需要考虑闰年2月的方法
+SELECT id, name, age FROM student WHERE Year(enroll_date) = 2021 AND Month(enroll_date) = 6;
+
+```
 
 
 
-
-
-  
-
+<div align="center"> <img src="Figs/MySQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A_29" width="700"/> </div><br>
 
 
 
+### 11.2.3 数值处理函数
+
+数值处理函数仅仅处理**数值数据**，这些函数主要用于代数、三角或几何运算。
+
+<div align="center"> <img src="Figs/MySQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A_30" width="800"/> </div><br>
 
 
 
+# 第 12 章 汇总数据
+
+:star: 聚集函数（aggregate function）：运行在行组上，计算和返回单个值的函数。
+
+<div align="center"> <img src="Figs/MySQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A_31" width="800"/> </div><br>
+
+### 12.1.1 AVG()函数
+
+`AVG()` 对表中行数计数并计算特定列值之和，求得该列的平均值。`AVG()` 用来返回所有列的平均值，也可以用来返回特定列或行的平均值。
+
+- `AVG()` 只能用来确定特定数值列的平均值，列名必须作为函数参数给出。为了获得多个列的平均值，必须使用多个 `AVG()` 函数。
+- `AVG()` 函数忽略列值为 `NULL` 的行。
+
+```sql
+-- AVG() 返回student 表中所有学生的平均年龄
+SELECT AVG(age) AS avg_age FROM student;	-- SELECT语句返回student 表中所有学生的平均年龄avg_age，avg_age 是别名
+
+SELECT AVG(age) AS avg_age FROM student WHERE id BETWEEN 1 AND 8;
+```
 
 
 
+### 12.1.2 COUNT()函数
+
+`COUNT()` 确定表中行的数目或符合特定条件的行的数目。
+
+- 使用 `COUNT(*)` 对表中行的数目进行计数，且**不忽略 NULL 值**；
+- 使用 `COUNT(column)` 对特定列中具有值的行进行计数，**忽略 `NULL` 值**；
+
+```sql
+-- 返回 student 表中学生的总数
+SELECT COUNT(*) AS num_stud FROM student;
+-- 对 student 表中，age 列中有值的行进行计数，忽略NULL 值
+SELECT COUNT(age) AS num_stud FROM student;
+
+```
+
+### 12.1.3 MAX()函数
+
+`MAX()` 函数：返回指定列中的最大值，如数值或者日期值。
+
+- `MAX` 函数忽略列值为 `NULL` 的行；
+- 对非数值数据使用 `MAX()`，当**用于文本数据时**，则 `MAX()` **返回（排序后数据列）最后一行**；
+
+```sql
+-- 返回 student 表中年龄最大的学生
+SELECT MAX(age) AS max_age FROM student;
+```
+
+### 12.1.4 MIN()函数
+
+`MIN()` 函数：返回指定列的最小值。
+
+- `MIN` 函数忽略列值为 `NULL` 的行；
+- 对非数值数据使用 `MIN()`，当**用于文本数据时**，则 `MIN()` **返回（排序后数据列）首行**；
+
+```sql
+-- 返回 student 表中年龄最小的学生
+SELECT MIN(age) AS min_age FROM student;
+```
+
+### 12.1.5 SUM()函数
+
+`SUM()` 函数：返回指定列的总和。
+
+- `SUM()` 函数忽略列值为 `NULL` 的行；
+
+```sql
+-- 返回 orderitems 表中订单物品数量之和
+SELECT SUM(quantity) AS items_ordered FROM orderitems;
+-- 返回 orderitems 表中订单金额之和
+SELECT SUM(quantity*item_price) AS total_price FROM orderitems;
+```
+
+
+
+:bulb: 利用标准的算术操作符，所有的聚集函数都可以用来执行多个列上的计算；
+
+
+
+## 12.2 聚集不同值
+
+以上 5 个聚集函数都可以按照如下规则使用：
+
+- 对所有的行执行计算，指定 ALL 参数或者不给参数（ALL 是默认行为）；
+
+- 只包含不同的值，指定 DISTINCT 参数；
+
+:warning: DISTINCT 参数使用：
+
+- 如果不指定 DISTINCT 参数，则默认为 ALL 参数；
+- 如果指定列名，则 DISTINCT  只能用于 `COUNT()` ；
+- DISTINCT 不能用于 `COUNT(*)` ，因此不允许使用 `COUNT(DISTINCT)`；
+- DISTINCT 必须使用列名，不能用于计算或表达式；
+- DISTINCT 用于 `MAX()` 或者 `MIN()` 语法合法，但是无实际意义；
+
+ 
+
+```sql
+-- AVG 函数返回 student 中学生平均年龄，但是使用了 DISTINCT 参数之后，平均值只考虑各个不同的年龄
+SELECT AVG(DISTINCT age) AS avg_age FROM student;
+```
+
+
+
+## 12.3 组合聚集函数
+
+:bulb:  在指定别名以包含某个聚集函数的结果时，不要使用表中实际列名。虽然这样做合法，但使用唯一的名字会可让你的 SQL 易于理解。
+
+```sql
+-- 单条 SELECT 语句执行了 4 个聚集计算
+SELECT COUNT(*) AS num_items,
+		MIN(item_price) AS price_min,
+		MAX(item_price) AS price_max,
+		AVG(item_price) AS price_avg FROM orderitems;
+```
+
+<div align="center"> <img src="Figs/MySQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A_32" width="475"/> </div><br>
+
+# 第 13 章 分组数据
 
 
 
