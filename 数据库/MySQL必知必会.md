@@ -1,4 +1,4 @@
-> MySQL 必知必会
+> 《MySQL 必知必会》读书笔记
 
 # 第 1 章 了解 SQL
 
@@ -942,6 +942,160 @@ SELECT COUNT(*) AS num_items,
 <div align="center"> <img src="Figs/MySQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A_32" width="475"/> </div><br>
 
 # 第 13 章 分组数据
+
+`GROUP BY` 子句和 `HAVING` 子句
+
+## 13.2 创建分组
+
+```sql
+ -- GROUP BY 子句
+ SELECT age, COUNT(*) AS people FROM student GROUP BY age;
+```
+
+分析：`SELECT` 语句指定了两个列，age 包含学生的年龄，people 为计算字段（ 用 `COUNT(*)` ） 函数建立。`GROUP BY` 子句指示 MySQL 按 age 排序并分组数据。
+
+<div align="center"> <img src="Figs/MySQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A_33" width="600"/> </div><br>
+
+**GROUP BY子句：**
+
+- `GROUP BY` 子句可包含任意数目的列。这使得能对分组进行嵌套，为数据分组提供更细致的控制。
+
+- 若在 `GROUP BY` 子句中嵌套了分组，数据将在最后规定的分组上
+
+  进行汇总。
+
+- `GROUP BY` 子句中列出的每个列都必须是检索列或有效的表达式（但不能是聚集函数）。如果在 `SELECT ` 中使用表达式，则必须在 `GROUP BY` 子句中指定相同的表达式。且不能使用别名。
+
+- 除聚集计算语句外，`SELECT` 语句中的每个列都必须在 `GROUP BY` 子句中给出。
+- 如果分组列中具有 `NULL` 值，则 `NULL` 将作为一个分组返回。如果列中有多行 `NULL` 值，它们将分为一组。
+
+- `GROUP BY` 子句必须出现在 `WHERE` 子句之后，`ORDER BY` 子句之前。
+
+
+
+:bulb: 使用 `ROLLUP` ：使用 `WITH ROLLUP` 关键字，可以得到每个分组以及每个分组汇总级别（针对每个分组）的值。
+
+```sql
+SELECT age, COUNT(*) AS people FROM student GROUP BY age WITH ROLLUP;
+```
+
+<div align="center"> <img src="Figs/MySQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A_34" width="800"/> </div><br>
+
+## 13.3 过滤分组
+
+`HAVING` 非常类似于 `WHERE` 。事实上，目前为止所学过的所有类型的 `WHERE` 子句都可以用 `HAVING` 来替代，句法相同，只是关键字有差别。**唯一的差别是 `WHERE` 过滤行，而 `HAVING` 过滤分组。**
+
+- `WHERE` 在数据分组前进行过滤，`HAVING` 在数据分组后进行过滤。`WHERE` 排除的行不包括在分组中，这可能会改变计算值，从而影响 `HAVING` 子句中基于这些值过滤掉的分组。
+
+```sql
+-- 过滤 COUNT(*) >= 3 (分组中至少有3个以上年龄相同的组)
+SELECT age, COUNT(*) AS people FROM student GROUP BY age HAVING COUNT(*) >= 3;
+```
+
+<div align="center"> <img src="Figs/MySQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A_35" width="870"/> </div><br>
+
+```sql
+-- 同时使用 WHERE 和 HAVING 子句,只对前 10 个 id 进行分组。
+SELECT age, COUNT(*) AS people FROM student WHERE id <= 10 GROUP BY age HAVING COUNT(*) >= 3;
+```
+
+
+
+## 13.4 分组和排序
+
+虽然 `GROUP BY` 和 `ORDER BY` 经常完成相同的工作，但它们之间的差异如下：
+
+<div align="center"> <img src="Figs/MySQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A_36" width="870"/> </div><br>
+
+:bulb: 一般在使用  `GROUP BY` 子句时，应该也给出 `ORDER BY`  子句来保证数据正确排序。
+
+```sql
+-- GROUP BY 子句用来按年龄分组数据，HAVING 子句过滤数据，使得返回总计相同年龄的组内成员大于等于2，最后用 ORDER BY 子句排序输出。
+SELECT age, COUNT(*) AS people FROM student GROUP BY age HAVING COUNT(*) >= 2 ORDER BY people;
+```
+
+
+
+## 13.5 SELECT语句中子句顺序
+
+<div align="center"> <img src="Figs/MySQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A_37" width="800"/> </div><br>
+
+<div align="center"> <img src="Figs/MySQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A_38" width="800"/> </div><br>
+
+# 第 14 章 使用子查询
+
+`SELECT` 语句是 SQL 的查询，上述学习的 `SELECT` 语句都是简单查询，即从单个数据库表中检索数据的单条语句。
+
+:star: **查询**：任何 SQL 语句都是查询，但此术语一般指 `SELECT` 语句。
+
+:star: **子查询**：嵌套在其他查询中的查询。
+
+## 14.2 利用子查询进行过滤
+
+在 `SELECT` 语句中，子查询总是从内向外处理。
+
+```sql
+-- 使用示例
+SELECT cust_name, cust_contact
+FROM customers
+WHERE  cust_id IN (SELECT cust_id
+                  FROM orders
+                  WHERE order_num IN(SELECT order_num
+                                    FROM orderitems
+                                    WHERE prod_id = 'TNT2'));
+```
+
+在 `WHERE` 子句中使用子查询能写出功能很强且很灵活的 SQL 语句。对于能嵌套的子查询的数目没有限制，不过在实际使用时由于性能的限制，不能嵌套太多的子查询。
+
+:zap: **列必须匹配**：在 `WHERE` 子句中使用子查询，应该保证 `SELECT` 语句具有与 `WHERE` 子句相同数目的列。通常，子查询将返回单个列并且与单个列匹配，但如果需要也可以使用多个列。
+
+:zap: **子查询和性能**：使用子查询并不总是执行这种类型的数据检索的最有效的方法。
+
+## 14.3 子查询中创建计算字段
+
+```sql
+-- SELECT 语句对 customers 表中每个客户返回 3 列：cust_name、cust_state和orders。orders 是一个计算字段，它是由圆括号中的子查询建立的。该子查询对检索出的每个客户执行一次。
+-- 子查询中的 WHERE 子句，使用了完全限定列名（第4章）
+SELECT	cust_name,
+		cust_state,
+		( SELECT COUNT(*)
+        FROM orders
+        WHERE orders.cust_id = customers.cust_id ) AS orders
+FROM customers
+ORDER BY cust_name;
+```
+
+:star: **相关子查询**：涉及外部查询的子查询。
+
+# 第 15 章 联结表
+
+## 15.1 联结
+
+SQL 最强大的功能之一：利用 SQL 的 `SELECT` ，在数据检索查询的执行中联结（join）表。
+
+联结是能执行的最重要的操作，很好地理解联结及其语法是学习SQL的一个极为重要的组成部分。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
