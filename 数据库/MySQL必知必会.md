@@ -1,4 +1,4 @@
-> _《MySQL 必知必会》读书笔记
+> 《MySQL 必知必会》读书笔记
 
 # 第 1 章 了解 SQL
 
@@ -159,10 +159,8 @@ MySQL 使用前要连接到数据库，MySQL在内部保存自己的用户列表
 ## 3.2 数据库和表基本操作
 
 ```sql
-SHOW DATABASES;			-- 显示当前 MySQL 中可用的数据库
+SHOW DATABASES;		-- 显示当前 MySQL 中可用的数据库
 USE school;			-- 使用 school 数据库
--- USE 语句并不返回任何结果，通常客服机会显示一个通知 `Database changed`。
-
 SHOW TABLES;		-- 显示当前使用的数据库内可用的表
 SHOW COLUMNS FROM student;	-- 展示 student 表的表头的属性设置
 ```
@@ -180,13 +178,13 @@ DESCRIBE student;	-- SHOW COLUMNS FROM student; 等价语句
 **其它 SHOW语句：**
 
 ```sql
-SHOW STATUS;	-- 显示广泛的服务器状态信息
+SHOW STATUS;			-- 显示广泛的服务器状态信息
 SHOW CREATE DATABASE;	-- 显示创建特定数据库
 SHOW CREATE TABLE;		-- 显示创建特定表
-SHOW GRANTS;	-- 显示授予用户（所有用户或特定用户）的安全权限；
-SHOW ERRORS;	-- 显示服务器错误信息
-SHOW WARNINGS;	-- 显示服务器警告消息
-HELP SHOW;		-- 显示允许的 SHOW 语句
+SHOW GRANTS;			-- 显示授予用户（所有用户或特定用户）的安全权限；
+SHOW ERRORS;			-- 显示服务器错误信息
+SHOW WARNINGS;			-- 显示服务器警告消息
+HELP SHOW;				-- 显示允许的 SHOW 语句
 ```
 
 :zap: mysql 5 新增支持一个 INFORMA-TION_SCHEMA 命令，可用来获得和过滤模式信息。
@@ -201,7 +199,7 @@ HELP SHOW;		-- 显示允许的 SHOW 语句
 
 ```sql
 -- 1. 单列检索
-SELECT name SELECT student;	-- 从 student 表中检索一个名为 name 的列 
+SELECT name SELECT student;		-- 从 student 表中检索一个名为 name 的列 
 ```
 
 上面的命令没有进行数据**过滤**和数据**排序**。
@@ -215,14 +213,14 @@ SELECT id, age FROM student;	-- 从 student 表中检索名为 id 和 age 的2�
 
 ```sql
 -- 3. 所有列检索
- SELECT * FROM student;		-- 在实际列名的位置使用星号 * 通配符
+ SELECT * FROM student;			-- 在实际列名的位置使用星号 * 通配符
 ```
 
 :bulb: 通配符：通配符 ` * ` 的使用可让自己省事，缺点是：检索不需要的列会**降低检索和应用程序的性能**。优点是：可以检索名字未知的列（有时你可能忘记的列名）。
 
 ```sql
 -- 4. 检索列的不同行
-SELECT DISTINCT age FROM student;		-- 注意和 SELECT age FROM student; 的区别
+SELECT DISTINCT age FROM student;	-- 注意和 SELECT age FROM student; 的区别
 ```
 
 <div align="center"> <img src="Figs/MySQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A_4.png" width="290"/> </div><br>
@@ -267,7 +265,8 @@ SELECT student.name FROM student;
 表名也可以是完全限定的，如下为查询数据库 school 中的 student 表。
 
 ```sql
-SELECT student.name FROM school.student;	-- 结果与上面完全一致
+-- 结果与上面完全一致
+SELECT student.name FROM school.student;
 ```
 
 
@@ -328,7 +327,8 @@ SELECT id, name, age FROM student ORDER BY age, name;
 
 
 ```sql
-SELECT id, name, age FROM student ORDER BY age DESC, name; -- 先按 age 降序排序，然后相同 age 默认按照 name 升序排序
+-- 先按 age 降序排序，然后相同 age 默认按照 name 升序排序
+SELECT id, name, age FROM student ORDER BY age DESC, name; 
 ```
 
 <div align="center"> <img src="Figs/MySQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A_13" width="550"/> </div><br>
@@ -356,7 +356,9 @@ SELECT age FROM student ORDER BY age DESC LIMIT 1;
 ## 6.1 使用WHERE子句
 
 ```sql
--- 相等性测试：检查一个列是否具有指定的值，并据此进行过滤-- 从student表中检索3个列，只返回 age = 22 的行SELECT id, NAME, age FROM student WHERE age = 22;
+-- 相等性测试：检查一个列是否具有指定的值，并据此进行过滤
+-- 从student表中检索3个列，只返回 age = 22 的行
+SELECT id, NAME, age FROM student WHERE age = 22;
 ```
 
 <div align="center"> <img src="Figs/MySQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A_14" width="480"/> </div><br>
@@ -389,13 +391,21 @@ SELECT age FROM student ORDER BY age DESC LIMIT 1;
 :one: 检查单个值
 
 ```sql
--- 返回 name 值为 Bob 的一行SELECT id, name, age FROM student WHERE name = 'Bob';	-- 可以为bob，MySQL 执行匹配时默认不区分大小写-- 返回 age ＜ 20 的所有人SELECT id, name, age FROM student WHERE age < 20;-- 语法类似，返回 age ≤ 20 的所有人
+-- 返回 name 值为 Bob 的一行
+SELECT id, name, age FROM student WHERE name = 'Bob';	-- 可以写成bob，MySQL 执行匹配时默认不区分大小写
+
+-- 返回 age ＜ 20 的所有人
+SELECT id, name, age FROM student WHERE age < 20;
 ```
 
 :two: 不匹配检查 `<> 或者 !=`
 
 ```sql
--- 查询 id 号不是 1 的学生SELECT id, name, age FROM student WHERE id <> 1;			-- != 符号等价-- 查询 name 不是 Rock 的学生SELECT id, name, age FROM student WHERE name <> 'Rock';		-- != 符号等价
+-- 查询 id 号不是 1 的学生
+SELECT id, name, age FROM student WHERE id <> 1;			-- != 符号等价
+
+-- 查询 name 不是 Rock 的学生
+SELECT id, name, age FROM student WHERE name <> 'Rock';		-- != 符号等价
 ```
 
 
@@ -435,7 +445,8 @@ SELECT id, name, age FROM student WHERE name IS NULL;
 :one: `AND `操作符：用在 WHERE 子句中的关键字，对多个列进行数据过滤。
 
 ```sql
-SELECT id, name, age FROM student WHERE id = 2 AND age <= 22;-- 遵循的添加格式：过滤条件1 AND 过滤条件2 AND 过滤条件3
+-- 遵循的添加格式：过滤条件1 AND 过滤条件2 AND 过滤条件3
+SELECT id, name, age FROM student WHERE id = 2 AND age <= 22;
 ```
 
 :two: `OR ` 操作符：指示 MySQL 检索匹配满足任一条件的行。
@@ -447,7 +458,10 @@ SELECT id, name, age FROM student WHERE id = 2 OR id = 3;
 :three: `AND` 和 `OR` 操作符组合，`AND ` <u>优先级更高</u>。
 
 ```sql
-SELECT id, name, age FROM student WHERE id = 1 OR id = 3 AND age >= 20;SELECT id, name, age FROM student WHERE (id = 1 OR id = 3) AND age >= 20;	-- 建议的 SQL 语法
+SELECT id, name, age FROM student WHERE id = 1 OR id = 3 AND age >= 20;
+
+-- 建议的 SQL 语法,避免歧义
+SELECT id, name, age FROM student WHERE (id = 1 OR id = 3) AND age >= 20;
 ```
 
 ## 7.2 IN 操作符
@@ -455,7 +469,10 @@ SELECT id, name, age FROM student WHERE id = 1 OR id = 3 AND age >= 20;SELECT id
 `IN` 操作符：指定条件范围，范围内的每个条件都可以进行匹配。
 
 ```sql
-SELECT id, name, age FROM student WHERE id IN (1, 2, 3) ORDER BY name;-- OR 等价表达SELECT id, name, age FROM student WHERE id = 1 OR id = 2 OR id = 3 ORDER BY name;
+SELECT id, name, age FROM student WHERE id IN (1, 2, 3) ORDER BY name;
+
+-- OR 等价表达
+SELECT id, name, age FROM student WHERE id = 1 OR id = 2 OR id = 3 ORDER BY name;
 ```
 
 `IN` 和 `OR` 的区别：
@@ -471,7 +488,8 @@ SELECT id, name, age FROM student WHERE id IN (1, 2, 3) ORDER BY name;-- OR 等�
 否定它之后所跟的任何条件。
 
 ```sql
--- 匹配 id = 1,2,3 之外的其它行SELECT id, name, age FROM student WHERE id NOT IN(1, 2, 3) ORDER BY name;
+-- 匹配 id = 1,2,3 之外的其它行
+SELECT id, name, age FROM student WHERE id NOT IN(1, 2, 3) ORDER BY name;
 ```
 
 :zap: MySQL 中的 `NOT` ：不同于多数 DBMS，MySQL 支持使用 `NOT` 对 `IN、BETWEEN 和 EXISTS`  子句取反。
@@ -497,7 +515,14 @@ SELECT id, name, age FROM student WHERE id IN (1, 2, 3) ORDER BY name;-- OR 等�
 `%`  **匹配多个任何字符（0，1，多个）**。
 
 ```sql
--- 检索以 o 开头的任意名字SELECT id, name, age FROM student WHERE name LIKE 'o%';-- 通配符可在搜索模式任意位置使用，且可使用多次SELECT id, name, age FROM student WHERE name LIKE '%i%';-- 通配符出现在字符中间SELECT id, name, age FROM student WHERE name LIKE 'b%B';
+-- 检索以 o 开头的任意名字
+SELECT id, name, age FROM student WHERE name LIKE 'o%';
+
+-- 通配符可在搜索模式任意位置使用，且可使用多次
+SELECT id, name, age FROM student WHERE name LIKE '%i%';
+
+-- 通配符出现在字符中间
+SELECT id, name, age FROM student WHERE name LIKE 'b%B';
 ```
 
 :warning: 注意尾空格：尾空格会干扰通配符匹配，如果保存词 `Bob` 之后还有多个空格，那 `‘%Bob’` 就无法匹配它们，解决方法就是在搜索模式最后附加一个 `%` ，或者使用函数去掉首尾空格。
@@ -541,13 +566,15 @@ SELECT id, name, age FROM student WHERE id IN (1, 2, 3) ORDER BY name;-- OR 等�
 :one: 基本字符匹配
 
 ```sql
--- 检索列 name 包含文本 Bob 的所有行SELECT id, name FROM student WHERE name REGEXP 'Bob' ORDER BY name;
+-- 检索列 name 包含文本 Bob 的所有行
+SELECT id, name FROM student WHERE name REGEXP 'Bob' ORDER BY name;
 ```
 
 分析：指示MySQL：`REGEXP` 后面所跟的东西作为一个正则表达式处理。
 
 ```sql
--- 进阶表达SELECT id, name FROM student WHERE name REGEXP '.ob' ORDER BY name;
+-- 进阶表达
+SELECT id, name FROM student WHERE name REGEXP '.ob' ORDER BY name;
 ```
 
 分析：`.`  **匹配任意一个字符**，当然也可用 `LIKE` 进行替换。(是正则表达式中的特殊字符)
@@ -558,7 +585,8 @@ SELECT id, name, age FROM student WHERE id IN (1, 2, 3) ORDER BY name;-- OR 等�
 - `REGEXP` 在列值内进行匹配，如果被匹配的文本在列值中出现，`REGEXP` 能找到它。
 
 ```sql
-SELECT id, name FROM student WHERE name LIKE '100' ORDER BY name;	-- LIKESELECT id, name FROM student WHERE name REGEXP '100' ORDER BY name;		-- REGEXP
+SELECT id, name FROM student WHERE name LIKE '100' ORDER BY name;		-- LIKE
+SELECT id, name FROM student WHERE name REGEXP '100' ORDER BY name;		-- REGEXP
 ```
 
 <div align="center"> <img src="Figs/MySQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A_15" width="600"/> </div><br>
@@ -566,7 +594,8 @@ SELECT id, name FROM student WHERE name LIKE '100' ORDER BY name;	-- LIKESELECT 
 :zap: 使得 `REGEXP` 和`LIKE ` 作用相同
 
 ```sql
--- 本章最后一节中，^开始每个表达式，$结束每个表达式SELECT id, name FROM student WHERE name REGEXP '^100$' ORDER BY name;
+-- 本章最后一节中，^开始每个表达式，$结束每个表达式
+SELECT id, name FROM student WHERE name REGEXP '^100$' ORDER BY name;
 ```
 
 
@@ -574,7 +603,8 @@ SELECT id, name FROM student WHERE name LIKE '100' ORDER BY name;	-- LIKESELECT 
 :warning: MySQL中的**正则表达式匹配默认不区分大小写**，引入关键字 `BINARY` 之后就会区分大小写。
 
 ```sql
--- BINARY 关键字SELECT name FROM student WHERE name REGEXP BINARY 'JetPack';
+-- BINARY 关键字
+SELECT name FROM student WHERE name REGEXP BINARY 'JetPack';
 ```
 
 
@@ -582,13 +612,20 @@ SELECT id, name FROM student WHERE name LIKE '100' ORDER BY name;	-- LIKESELECT 
 :two: 进行OR匹配 `|`
 
 ```sql
--- age 为 18 或者为 20 的行SELECT id, name, age FROM student WHERE age REGEXP '18|20' ORDER BY name;-- 两个以上 OR 条件，注意中间无空格-- '18|20|30'
+-- age 为 18 或者为 20 的行
+SELECT id, name, age FROM student WHERE age REGEXP '18|20' ORDER BY name;
+-- 两个以上 OR 条件，注意中间无空格-- '18|20|30'
 ```
 
 :three: 匹配几个字符之一
 
 ```sql
--- [123] 匹配特定的字符123SELECT id, name, age FROM student WHERE name REGEXP 'SELECT id, name, age FROM student WHERE name REGEXP '[123] Bob' ORDER BY name;' ORDER BY name;-- [] 是另一种形式的 OR语句，等价于[1|2|3] Bob-- '1|2|3 Bob' 的意思是 '1'或者'2'或者'3 Bob'--  '[^12] Bob' 匹配除这些字符外的任何东西，即返回 3 Bob
+-- [123] 匹配特定的字符123
+SELECT id, name, age FROM student WHERE name REGEXP '[123] Bob' ORDER BY name;
+-- [] 是另一种形式的 OR语句，等价于[1|2|3] Bob
+-- '1|2|3 Bob' 的意思是 '1'或者'2'或者'3 Bob'
+
+--  '[^12] Bob' 匹配除这些字符外的任何东西，即返回 3 Bob
 ```
 
 分析：正则表达式 `[123] Bob` （等价于`[1|2|3] Bob`）中 `[123]` 指示匹配 1 或 2 或 3。因此返回（没有 name 为 3 Bob）：
@@ -600,7 +637,9 @@ SELECT id, name FROM student WHERE name LIKE '100' ORDER BY name;	-- LIKESELECT 
 范围不限于完整的集合，范围也可以是字符。
 
 ```sql
--- 集合用来定义要匹配的一个或者多个字符-- [123456] 等价于 [1-6]-- [a-z]SELECT id, name, age FROM student WHERE name REGEXP '[1-5] Bob' ORDER BY age;
+-- 集合用来定义要匹配的一个或者多个字符
+-- [123456] 等价于 [1-6]	-- [a-z]
+SELECT id, name, age FROM student WHERE name REGEXP '[1-5] Bob' ORDER BY age;
 ```
 
 <div align="center"> <img src="Figs/MySQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A_17" width="700"/> </div><br>
@@ -608,7 +647,8 @@ SELECT id, name FROM student WHERE name LIKE '100' ORDER BY name;	-- LIKESELECT 
 :five: 匹配特殊字符 `\\` 
 
 ```sql
--- 转义	\\-匹配-	\\.匹配.	\\\匹配\SELECT id, name, age FROM student WHERE name REGEXP '\\.' ORDER BY id;
+-- 转义	\\-	匹配-		\\.	匹配.		\\\		匹配\
+SELECT id, name, age FROM student WHERE name REGEXP '\\.' ORDER BY id;
 ```
 
 <center><font color = "black">表9-1 空白元字符</color></center>
@@ -634,13 +674,20 @@ SELECT id, name FROM student WHERE name LIKE '100' ORDER BY name;	-- LIKESELECT 
 <div align="center"> <img src="Figs/MySQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A_19" width="800"/> </div><br>
 
 ```sql
--- Bobs? 匹配 Bob和Bobs (s后的？使s可选,因为?匹配它前面的任何字符0次或1次)SELECT id, name, age FROM student WHERE name REGEXP '\\([0-9] Bobs?\\)' ORDER BY id;
+-- Bobs? 匹配 Bob和Bobs (s后的？使s可选,因为?匹配它前面的任何字符0次或1次)
+SELECT id, name, age FROM student WHERE name REGEXP '\\([0-9] Bobs?\\)' ORDER BY id;
 ```
 
 <div align="center"> <img src="Figs/MySQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A_20" width="750"/> </div><br>
 
 ```sql
--- 匹配连在一起的 4 个数字-- [:digit:]匹配任意数字，{4} 要求它前面的字符出现4次。SELECT id, name, age FROM student WHERE name REGEXP '[[:digit:]]{4}' ORDER BY id;-- 等价表达-- SELECT id, name, age FROM student WHERE name REGEXP '[0-9]{4}' ORDER BY id;-- SELECT id, name, age FROM student WHERE name REGEXP '[0-9][0-9][0-9][0-9]' ORDER BY id;
+-- 匹配连在一起的 4 个数字
+-- [:digit:]匹配任意数字，{4} 要求它前面的字符出现4次。
+SELECT id, name, age FROM student WHERE name REGEXP '[[:digit:]]{4}' ORDER BY id;
+
+-- 等价表达-- 
+SELECT id, name, age FROM student WHERE name REGEXP '[0-9]{4}' ORDER BY id;
+SELECT id, name, age FROM student WHERE name REGEXP '[0-9][0-9][0-9][0-9]' ORDER BY id;
 ```
 
 <div align="center"> <img src="Figs/MySQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A_21" /> </div><br>
@@ -652,7 +699,8 @@ SELECT id, name FROM student WHERE name LIKE '100' ORDER BY name;	-- LIKESELECT 
 <div align="center"> <img src="Figs/MySQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A_22" width="750"/> </div><br>
 
 ```sql
--- 检索 name 列中开头为数字或者. 的行  SELECT id, name, age FROM student WHERE name REGEXP '^[0-9\\.]' ORDER BY id;
+-- 检索 name 列中开头为数字或者. 的行  
+SELECT id, name, age FROM student WHERE name REGEXP '^[0-9\\.]' ORDER BY id;
 ```
 
 :zap: `^` 双重用途：
@@ -663,7 +711,8 @@ SELECT id, name FROM student WHERE name LIKE '100' ORDER BY name;	-- LIKESELECT 
 :zap: 使得 `REGEXP` 和`LIKE ` 作用相同
 
 ```sql
--- 本章最后一节中，^开始每个表达式，$结束每个表达式SELECT id, name FROM student WHERE name REGEXP '^100$' ORDER BY name;
+-- 本章最后一节中，^开始每个表达式，$结束每个表达式
+SELECT id, name FROM student WHERE name REGEXP '^100$' ORDER BY name;
 ```
 
 :bulb: 正则表达式测试
@@ -687,13 +736,18 @@ SELECT 'hello' REGEXP '[0-9]';		-- hello 中没有数字，返回0
 :bulb: 多数DBMS 使用 `+` 或 `||` 来实现拼接，MySQL 使用 `Concat()` 函数实现。
 
 ```sql
--- Concat()拼接串,各个串之间使用逗号分隔SELECT Concat(name, '(', age, ')') FROM student ORDER BY name;
+-- Concat()拼接串,各个串之间使用逗号分隔
+SELECT Concat(name, '(', age, ')') FROM student ORDER BY name;
 ```
 
 <div align="center"> <img src="Figs/MySQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A_23" width="650"/> </div><br>
 
 ```sql
--- 删除数据右侧多余的空格，RTrim() 函数SELECT Concat(RTrim(name), '(', RTrim(age), ')') FROM student ORDER BY name;-- 删除数据左侧多余的空格，LTrim() 函数SELECT Concat(LTrim(name), '(', LTrim(age), ')') FROM student ORDER BY name;
+-- 删除数据右侧多余的空格，RTrim() 函数
+SELECT Concat(RTrim(name), '(', RTrim(age), ')') FROM student ORDER BY name;
+
+-- 删除数据左侧多余的空格，LTrim() 函数
+SELECT Concat(LTrim(name), '(', LTrim(age), ')') FROM student ORDER BY name;
 ```
 
 **使用别名**
@@ -703,7 +757,8 @@ SELECT 'hello' REGEXP '[0-9]';		-- hello 中没有数字，返回0
 :star: **别名**：一个字段或值的替换名，用 `AS` 关键字赋予，又称为导出列。
 
 ```sql
--- AS stu_title 指示SQL 创建一个名为 stu_title 的列，客户机应用可以按名引用这个列SELECT Concat(RTrim(name), ' (', RTrim(age), ')  ') AS stu_title FROM student ORDER BY name;
+-- AS stu_title 指示SQL 创建一个名为 stu_title 的列，客户机应用可以按名引用这个列
+SELECT Concat(RTrim(name), ' (', RTrim(age), ')  ') AS stu_title FROM student ORDER BY name;
 ```
 
 
@@ -715,7 +770,8 @@ SELECT 'hello' REGEXP '[0-9]';		-- hello 中没有数字，返回0
 <div align="center"> <img src="Figs/MySQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A_24" width="800"/> </div><br>
 
 ```sql
--- 使用举例 SELECT id, quantity, item_price, quantity*item_price AS expanded_price FROM orderitems WHERE id = 1;
+-- 使用举例 
+SELECT id, quantity, item_price, quantity*item_price AS expanded_price FROM orderitems WHERE id = 1;
 ```
 
 <div align="center"> <img src="Figs/MySQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A_25" width="980"/> </div><br>
@@ -725,7 +781,8 @@ SELECT 'hello' REGEXP '[0-9]';		-- hello 中没有数字，返回0
 ### 11.2.1 文本处理函数
 
 ```sql
--- Upper()函数：小写转换为大写SELECT id, name, Upper(name) AS Name FROM student ORDER BY id;
+-- Upper()函数：小写转换为大写
+SELECT id, name, Upper(name) AS Name FROM student ORDER BY id;
 ```
 
 <div align="center"> <img src="Figs/MySQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A_26" width="700"/> </div><br>
@@ -748,7 +805,12 @@ SELECT 'hello' REGEXP '[0-9]';		-- hello 中没有数字，返回0
 :bulb: 如果需要日期，则使用 `Date()` 函数；需要使用时间，则使用 `Time()` 函数。
 
 ```sql
-SELECT id, name, age FROM student WHERE Date(enroll_date) = '2021-06-08';-- 检索出 2021年6月入学的所有学生SELECT id, name, age FROM student WHERE Date(enroll_date) BETWEEN '2021-06-01' AND '2021-06-3O';-- 检索出 2021年6月入学的所有学生，不需要记住每个月有多少天也不需要考虑闰年2月的方法SELECT id, name, age FROM student WHERE Year(enroll_date) = 2021 AND Month(enroll_date) = 6;
+SELECT id, name, age FROM student WHERE Date(enroll_date) = '2021-06-08';
+
+-- 检索出 2021年6月入学的所有学生
+SELECT id, name, age FROM student WHERE Date(enroll_date) BETWEEN '2021-06-01' AND '2021-06-3O';
+-- 检索出 2021年6月入学的所有学生，不需要记住每个月有多少天也不需要考虑闰年2月的方法
+SELECT id, name, age FROM student WHERE Year(enroll_date) = 2021 AND Month(enroll_date) = 6;
 ```
 
 
@@ -779,7 +841,11 @@ SELECT id, name, age FROM student WHERE Date(enroll_date) = '2021-06-08';-- 检�
 - `AVG()` 函数忽略列值为 `NULL` 的行。
 
 ```sql
--- AVG() 返回student 表中所有学生的平均年龄SELECT AVG(age) AS avg_age FROM student;	-- SELECT语句返回student 表中所有学生的平均年龄avg_age，avg_age 是别名SELECT AVG(age) AS avg_age FROM student WHERE id BETWEEN 1 AND 8;
+-- AVG() 返回student 表中所有学生的平均年龄
+SELECT AVG(age) AS avg_age FROM student;
+
+-- SELECT语句返回student 表中所有学生的平均年龄avg_age，avg_age 是别名
+SELECT AVG(age) AS avg_age FROM student WHERE id BETWEEN 1 AND 8;
 ```
 
 
@@ -792,7 +858,11 @@ SELECT id, name, age FROM student WHERE Date(enroll_date) = '2021-06-08';-- 检�
 - 使用 `COUNT(column)` 对特定列中具有值的行进行计数，**忽略 `NULL` 值**；
 
 ```sql
--- 返回 student 表中学生的总数SELECT COUNT(*) AS num_stud FROM student;-- 对 student 表中，age 列中有值的行进行计数，忽略NULL 值SELECT COUNT(age) AS num_stud FROM student;
+-- 返回 student 表中学生的总数
+SELECT COUNT(*) AS num_stud FROM student;
+
+-- 对 student 表中，age 列中有值的行进行计数，忽略NULL 值
+SELECT COUNT(age) AS num_stud FROM student;
 ```
 
 ### 12.1.3 MAX()函数
@@ -803,7 +873,8 @@ SELECT id, name, age FROM student WHERE Date(enroll_date) = '2021-06-08';-- 检�
 - 对非数值数据使用 `MAX()`，当**用于文本数据时**，则 `MAX()` **返回（排序后数据列）最后一行**；
 
 ```sql
--- 返回 student 表中年龄最大的学生SELECT MAX(age) AS max_age FROM student;
+-- 返回 student 表中年龄最大的学生
+SELECT MAX(age) AS max_age FROM student;
 ```
 
 ### 12.1.4 MIN()函数
@@ -814,7 +885,8 @@ SELECT id, name, age FROM student WHERE Date(enroll_date) = '2021-06-08';-- 检�
 - 对非数值数据使用 `MIN()`，当**用于文本数据时**，则 `MIN()` **返回（排序后数据列）首行**；
 
 ```sql
--- 返回 student 表中年龄最小的学生SELECT MIN(age) AS min_age FROM student;
+-- 返回 student 表中年龄最小的学生
+SELECT MIN(age) AS min_age FROM student;
 ```
 
 ### 12.1.5 SUM()函数
@@ -824,7 +896,11 @@ SELECT id, name, age FROM student WHERE Date(enroll_date) = '2021-06-08';-- 检�
 - `SUM()` 函数忽略列值为 `NULL` 的行；
 
 ```sql
--- 返回 orderitems 表中订单物品数量之和SELECT SUM(quantity) AS items_ordered FROM orderitems;-- 返回 orderitems 表中订单金额之和SELECT SUM(quantity*item_price) AS total_price FROM orderitems;
+-- 返回 orderitems 表中订单物品数量之和
+SELECT SUM(quantity) AS items_ordered FROM orderitems;
+
+-- 返回 orderitems 表中订单金额之和
+SELECT SUM(quantity*item_price) AS total_price FROM orderitems;
 ```
 
 
@@ -852,7 +928,8 @@ SELECT id, name, age FROM student WHERE Date(enroll_date) = '2021-06-08';-- 检�
  
 
 ```sql
--- AVG 函数返回 student 中学生平均年龄，但是使用了 DISTINCT 参数之后，平均值只考虑各个不同的年龄SELECT AVG(DISTINCT age) AS avg_age FROM student;
+-- AVG 函数返回 student 中学生平均年龄，但是使用了 DISTINCT 参数之后，平均值只考虑各个不同的年龄
+SELECT AVG(DISTINCT age) AS avg_age FROM student;
 ```
 
 
@@ -862,7 +939,11 @@ SELECT id, name, age FROM student WHERE Date(enroll_date) = '2021-06-08';-- 检�
 :bulb:  在指定别名以包含某个聚集函数的结果时，不要使用表中实际列名。虽然这样做合法，但使用唯一的名字会可让你的 SQL 易于理解。
 
 ```sql
--- 单条 SELECT 语句执行了 4 个聚集计算SELECT COUNT(*) AS num_items,		MIN(item_price) AS price_min,		MAX(item_price) AS price_max,		AVG(item_price) AS price_avg FROM orderitems;
+-- 单条 SELECT 语句执行了 4 个聚集计算
+SELECT COUNT(*) AS num_items,		
+		MIN(item_price) AS price_min,		
+		MAX(item_price) AS price_max,		
+		AVG(item_price) AS price_avg FROM orderitems;
 ```
 
 <div align="center"> <img src="Figs/MySQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A_32" width="475"/> </div><br>
@@ -874,7 +955,8 @@ SELECT id, name, age FROM student WHERE Date(enroll_date) = '2021-06-08';-- 检�
 ## 13.2 创建分组
 
 ```sql
- -- GROUP BY 子句 SELECT age, COUNT(*) AS people FROM student GROUP BY age;
+ -- GROUP BY 子句 
+ SELECT age, COUNT(*) AS people FROM student GROUP BY age;
 ```
 
 分析：`SELECT` 语句指定了两个列，age 包含学生的年龄，people 为计算字段（ 用 `COUNT(*)` ） 函数建立。`GROUP BY` 子句指示 MySQL 按 age 排序并分组数据。
@@ -914,13 +996,15 @@ SELECT age, COUNT(*) AS people FROM student GROUP BY age WITH ROLLUP;
 - `WHERE` 在数据分组前进行过滤，`HAVING` 在数据分组后进行过滤。`WHERE` 排除的行不包括在分组中，这可能会改变计算值，从而影响 `HAVING` 子句中基于这些值过滤掉的分组。
 
 ```sql
--- 过滤 COUNT(*) >= 3 (分组中至少有3个以上年龄相同的组)SELECT age, COUNT(*) AS people FROM student GROUP BY age HAVING COUNT(*) >= 3;
+-- 过滤 COUNT(*) >= 3 (分组中至少有3个以上年龄相同的组)
+SELECT age, COUNT(*) AS people FROM student GROUP BY age HAVING COUNT(*) >= 3;
 ```
 
 <div align="center"> <img src="Figs/MySQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A_35" width="870"/> </div><br>
 
 ```sql
--- 同时使用 WHERE 和 HAVING 子句,只对前 10 个 id 进行分组。SELECT age, COUNT(*) AS people FROM student WHERE id <= 10 GROUP BY age HAVING COUNT(*) >= 3;
+-- 同时使用 WHERE 和 HAVING 子句,只对前 10 个 id 进行分组。
+SELECT age, COUNT(*) AS people FROM student WHERE id <= 10 GROUP BY age HAVING COUNT(*) >= 3;
 ```
 
 
@@ -934,7 +1018,8 @@ SELECT age, COUNT(*) AS people FROM student GROUP BY age WITH ROLLUP;
 :bulb: 一般在使用  `GROUP BY` 子句时，应该也给出 `ORDER BY`  子句来保证数据正确排序。
 
 ```sql
--- GROUP BY 子句用来按年龄分组数据，HAVING 子句过滤数据，使得返回总计相同年龄的组内成员大于等于2，最后用 ORDER BY 子句排序输出。SELECT age, COUNT(*) AS people FROM student GROUP BY age HAVING COUNT(*) >= 2 ORDER BY people;
+-- GROUP BY 子句用来按年龄分组数据，HAVING 子句过滤数据，使得返回总计相同年龄的组内成员大于等于2，最后用 ORDER BY 子句排序输出。
+SELECT age, COUNT(*) AS people FROM student GROUP BY age HAVING COUNT(*) >= 2 ORDER BY people;
 ```
 
 
@@ -958,7 +1043,11 @@ SELECT age, COUNT(*) AS people FROM student GROUP BY age WITH ROLLUP;
 在 `SELECT` 语句中，子查询总是从内向外处理。
 
 ```sql
--- 使用示例SELECT cust_name, cust_contactFROM customersWHERE  cust_id IN (SELECT cust_id                  FROM orders                  WHERE order_num IN(SELECT order_num                                    FROM orderitems                                    WHERE prod_id = 'TNT2'));
+-- 使用示例
+SELECT cust_name, cust_contact FROM customers
+WHERE  cust_id IN (SELECT cust_id FROM orders                  
+                   WHERE order_num IN(SELECT order_num FROM orderitems                               
+                       				  WHERE prod_id = 'TNT2'));
 ```
 
 在 `WHERE` 子句中使用子查询能写出功能很强且很灵活的 SQL 语句。对于能嵌套的子查询的数目没有限制，不过在实际使用时由于性能的限制，不能嵌套太多的子查询。
@@ -970,7 +1059,11 @@ SELECT age, COUNT(*) AS people FROM student GROUP BY age WITH ROLLUP;
 ## 14.3 子查询中创建计算字段
 
 ```sql
--- SELECT 语句对 customers 表中每个客户返回 3 列：cust_name、cust_state和orders。orders 是一个计算字段，它是由圆括号中的子查询建立的。该子查询对检索出的每个客户执行一次。-- 子查询中的 WHERE 子句，使用了完全限定列名（第4章）SELECT	cust_name,		cust_state,		( SELECT COUNT(*)        FROM orders        WHERE orders.cust_id = customers.cust_id ) AS ordersFROM customersORDER BY cust_name;
+-- SELECT 语句对 customers 表中每个客户返回 3 列：cust_name、cust_state和orders。orders 是一个计算字段，它是由圆括号中的子查询建立的。该子查询对检索出的每个客户执行一次。
+-- 子查询中的 WHERE 子句，使用了完全限定列名（第4章）
+SELECT	cust_name, cust_state,(
+    	SELECT COUNT(*) FROM orders WHERE orders.cust_id = customers.cust_id ) 
+AS orders FROM customers ORDER BY cust_name;
 ```
 
 :star: **相关子查询**：涉及外部查询的子查询。
@@ -996,7 +1089,12 @@ SQL 最强大的功能之一：利用 SQL 的 `SELECT` ，在数据检索查询�
 规定要联结的所有表 + 表如何关联
 
 ```sql
--- vend_name在一个表中，prod_name 和 prod_price在另外一个表中-- WHERE 子句指示MySQL匹配vendors表中的vend_id和products表中的vend_id-- 完全限定列名，如vendors.vend_idSELECT vend_name, prod_name, prod_priceFROM vendors, productsWHERE vendors.vend_id = products.vend_idORDER BY vend_name, prod_name;
+-- vend_name在一个表中，prod_name 和 prod_price在另外一个表中
+-- WHERE 子句指示MySQL匹配vendors表中的vend_id和products表中的vend_id
+-- 完全限定列名，如vendors.vend_id
+SELECT vend_name, prod_name, prod_price FROM vendors, products
+WHERE vendors.vend_id = products.vend_id
+ORDER BY vend_name, prod_name;
 ```
 
 :bulb: **完全限定列名**：防止引用的列出现二义性错误。
@@ -1012,7 +1110,13 @@ SQL 最强大的功能之一：利用 SQL 的 `SELECT` ，在数据检索查询�
 等值联结（equijoin）：基于两个表之间的相等测试，也称为内部联结。
 
 ```sql
--- 15.2 创建联结 中的示例SELECT vend_name, prod_name, prod_priceFROM vendors, productsWHERE vendors.vend_id = products.vend_idORDER BY vend_name, prod_name;-- 等价表达SELECT vend_name, prod_name, prod_priceFROM vendors INNER JOIN productsON vendors.vend_id = products.vend_id;
+-- 15.2 创建联结 中的示例
+SELECT vend_name, prod_name, prod_price FROM vendors, products
+WHERE vendors.vend_id = products.vend_id
+ORDER BY vend_name, prod_name;
+-- 等价表达
+SELECT vend_name, prod_name, prod_price FROM vendors
+INNER JOIN products ON vendors.vend_id = products.vend_id;
 ```
 
 <u>分析</u>：上述等价表达语句中 `SELECT` 语句中 `FROM` 子句不同，`FROM` 子句中的 `INNER JOIN` 用于指定两个表之间的关系 ，联结条件用特定的 `ON` 子句而不是 `WHERE` 子句指定。 
@@ -1026,7 +1130,12 @@ SQL 最强大的功能之一：利用 SQL 的 `SELECT` ，在数据检索查询�
 SQL 不对一条 `SELECT` 语句可以联结的表的数目进行限制。创建联结只需要首先列出所有表，然后定义表之间的关系。
 
 ```sql
--- 例：联结多个表SELECT prod_name, vend_name, prod_price, quantityFROM orderitems, products, vendorsWHERE products.vend_id = vendors.vend_id	AND orderitems.prod_id = product.prod_id	AND order_num = 20005;
+-- 例：联结多个表
+SELECT prod_name, vend_name, prod_price, quantity
+FROM orderitems, products, vendors
+WHERE products.vend_id = vendors.vend_id	
+AND orderitems.prod_id = product.prod_id	
+AND order_num = 20005;
 ```
 
 <u>分析</u>：显示编号为 20005 的订单中的物品。订单物品存储在 orderitems 表中。每个产品按其产品 ID 存储，它引用 products 表中的产品。这些产品通过供应商 ID 联结到 vendors 表中相应的供应商，供应商 ID 存储在每个产品的记录中。这里的 `FROM ` 子句列出了3个表，而 `WHERE ` 子句定义了这两个联结条件，而第三个联结条件用来过滤出订单 20005中的物品。
@@ -1038,7 +1147,21 @@ SQL 不对一条 `SELECT` 语句可以联结的表的数目进行限制。创建
 
 
 ```sql
--- 例：SELECT 语句返回订购产品 TNT2 的客户列表SELECT cust_name, cust_contactFROM customersWHERE cust_id IN (SELECT cust_id                 FROM orders                 WHERE order_num IN (SELECT order_num                                     FROM orderitems                                    WHERE prod_id = 'TNT2'));-- 等价表达：使用联结查询, 效率更高 !!!-- 使用两个联结, 3个WHERE子句条件。-- 前两个关联联结中的表，后一个过滤产品TNT2的数据。SELECT cust_name, cust_contactFROM customers, orders, orderitemsWHERE customers.cust_id = orders.cust_id	AND orderitems.order_num = orders.order_num	AND prod_id = 'TNT2';
+-- 例：SELECT 语句返回订购产品 TNT2 的客户列表
+SELECT cust_name, cust_contact FROM customers
+WHERE cust_id IN (
+    		SELECT cust_id FROM orders                 
+            WHERE order_num IN (
+                      SELECT order_num                                     
+                      FROM orderitems                                    
+                      WHERE prod_id = 'TNT2'));
+-- 等价表达：使用联结查询, 效率更高 !!!
+-- 使用两个联结, 3个WHERE子句条件。
+-- 前两个关联联结中的表，后一个过滤产品TNT2的数据。
+SELECT cust_name, cust_contact FROM customers, orders, orderitems
+WHERE customers.cust_id = orders.cust_id	
+AND orderitems.order_num = orders.order_num	
+AND prod_id = 'TNT2';
 ```
 
 
@@ -1050,7 +1173,9 @@ SQL 不对一条 `SELECT` 语句可以联结的表的数目进行限制。创建
 ## 16.1 使用表别名
 
 ```sql
--- 给列起别名SELECT Concat(RTrim(vend_name), '(', RTrim(vend_country), ')') AS vend_titleFROM vendorsORDER BY vend_name;
+-- 给列起别名
+SELECT Concat(RTrim(vend_name), '(', RTrim(vend_country), ')') AS vend_title
+FROM vendors ORDER BY vend_name;
 ```
 
 
@@ -1058,7 +1183,9 @@ SQL 不对一条 `SELECT` 语句可以联结的表的数目进行限制。创建
 别名：1）用于列名和计算字段；2）给表名起别名，旨在缩短 SQL 语句，并允许在单条 `SELECT` 语句中多次使用相同的表。
 
 ```sql
-SELECT cust_name, cust_contactFROM customers AS c, orders AS o, orderitems AS oiWHERE c.cust_id = o.cust_id	AND oi.order_num = o.order_num	AND prod_id = 'TNT2';
+SELECT cust_name, cust_contact
+FROM customers AS c, orders AS o, orderitems AS oi
+WHERE c.cust_id = o.cust_id	 AND oi.order_num = o.order_num	AND prod_id = 'TNT2';
 ```
 
 表别名不仅能用于 `WHERE` 子句，还可以用于 `SELECT` 的列表、`ORDER BY` 子句以及语句的其他部分。表别名只在查询执行中使用，且其不返回到客户机。
@@ -1074,7 +1201,17 @@ SELECT cust_name, cust_contactFROM customers AS c, orders AS o, orderitems AS oi
 使用表别名的主要原因之一是：能在单条 `SELECT` 语句中不止一次引用相同的表。
 
 ```sql
--- 例如：当发现某物品（其ID为DTNTR）存在问题，因此想知道生产该物品的供应商生产的其他物品是否也存在这些问题。此查询要求首先找到生产ID为DTNTR的物品的供应商，然后找出这个供应商生产的其他物品。-- 方法1：内部 SELECT 语句返回生产ID为 DTNTR 的物品供应商的 vend_id，该ID用于外部查询的 WHERE 子句中，以便检索出这个供应商生产的所有物品。SELECT prod_id, prod_nameFROM productsWHERE vend_id = (SELECT vend_id                 FROM products                 WHERE prod_id = 'DTNTR');-- 联结的相同查询SELECT p1.prod_id, p1.prod_nameFROM products AS p1, products AS p2WHERE p1.vend_id = p2.vend_id	AND p2.prod_id = 'DTNTR';
+-- 例如：当发现某物品（其ID为DTNTR）存在问题，因此想知道生产该物品的供应商生产的其他物品是否也存在这些问题。此查询要求首先找到生产ID为DTNTR的物品的供应商，然后找出这个供应商生产的其他物品。
+-- 方法1：内部 SELECT 语句返回生产ID为 DTNTR 的物品供应商的 vend_id，该ID用于外部查询的 WHERE 子句中，以便检索出这个供应商生产的所有物品。
+SELECT prod_id, prod_name FROM products
+WHERE vend_id = (SELECT vend_id                 
+                 FROM products                 
+                 WHERE prod_id = 'DTNTR');
+-- 联结的相同查询
+SELECT p1.prod_id, p1.prod_name
+FROM products AS p1, products AS p2
+WHERE p1.vend_id = p2.vend_id	
+AND p2.prod_id = 'DTNTR';
 ```
 
 **分析**：此查询中需要的两个表实际上是相同的表，因此 products 表在 `FROM` 子句中出现了两次。虽然这是完全合法的，但对 products 的引用具有二义性，因为MySQL不知道你引用的是 products 表中的哪个实例。
@@ -1090,7 +1227,9 @@ products 的第一次出现为别名 p1，第二次出现为别名 p2。现在�
 <u>自然联结</u>：你只能选择那些唯一的列，通常是通过对表使用通配符`SELECT *`，对所有其他表的列使用明确的子集来完成。
 
 ```sql
-SELECT c.*, o.order_num, o.order_date,		oi.prod_id, oi.quantity, oi.item_priceFROM customers AS c, orders AS o, orderitems AS oiWHERE c.cust_id = o.cust_id	AND oi.order_num = o.order_num	AND prod_id = 'FB';
+SELECT c.*, o.order_num, o.order_date, oi.prod_id, oi.quantity, oi.item_price
+FROM customers AS c, orders AS o, orderitems AS oi
+WHERE c.cust_id = o.cust_id	AND oi.order_num = o.order_num	AND prod_id = 'FB';
 ```
 
 **分析**：本例中，通配符只对第一个表使用，所有其他列明确列出，所有没有重复的列被检索出。
@@ -1100,7 +1239,21 @@ SELECT c.*, o.order_num, o.order_date,		oi.prod_id, oi.quantity, oi.item_priceFR
 联结包含了那些在相关表中没有关联行的行。
 
 ```sql
--- 内部联结：检索所有客户以及所有订单SELECT customers.cust_id, orders.order_numFROM customers INNER JOIN ordersON customers.cust_id = orders.cust_id;-- 外部联结：检索所有的客户，以及那些没有订单的客户-- 使用LEFT OUTER JOIN从FROM子句的左边表（customers表）中选择所有行SELECT customers.cust_id, orders.order_numFROM customers LEFT OUTER JOIN ordersON customers.cust_id = orders.cust_id;-- 为了从右边的表中选择所有行，应该使用 RIGHT OUTER JOINSELECT customers.cust_id, orders.order_numFROM customers RIGHT OUTER JOIN ordersON orders.cust_id = customers.cust_id;
+-- 内部联结：检索所有客户以及所有订单
+SELECT customers.cust_id, orders.order_num
+FROM customers INNER JOIN orders
+ON customers.cust_id = orders.cust_id;
+
+-- 外部联结：检索所有的客户，以及那些没有订单的客户
+-- 使用LEFT OUTER JOIN从FROM子句的左边表（customers表）中选择所有行
+SELECT customers.cust_id, orders.order_num
+FROM customers LEFT OUTER JOIN orders
+ON customers.cust_id = orders.cust_id;
+
+-- 为了从右边的表中选择所有行，应该使用 RIGHT OUTER JOIN
+SELECT customers.cust_id, orders.order_num
+FROM customers RIGHT OUTER JOIN orders
+ON orders.cust_id = customers.cust_id;
 ```
 
 **分析**：本条 `SELECT` 语句使用了关键字 `OUTER JOIN` 指定联结的类型（而不是在`WHERE` 子句中进行指定）。使用 `OUTER JOIN` 语法时，需要使用 `RIGHT` 或 `LEFT` 关键字指定包括其所有行的表（`RIGHT` 指出的是 `OUTER JOIN` 右边的表，而 `LEFT` 指出的是 `OUTER JOIN` 左边的表 ）。
@@ -1116,13 +1269,21 @@ SELECT c.*, o.order_num, o.order_date,		oi.prod_id, oi.quantity, oi.item_priceFR
 ## 16.3 使用带聚集函数的联结
 
 ```sql
--- 检索所有客户以及每个客户所下的订单数SELECT customers.cust_name,       customers.cust_id,       COUNT(orders.order_num) AS num_ordFROM customers INNER JOIN ordersON customers.cust_id = orders.cust_idGROUP BY customers.cust_id;
+-- 检索所有客户以及每个客户所下的订单数
+SELECT customers.cust_name, customers.cust_id,       
+COUNT(orders.order_num) AS num_ord
+FROM customers INNER JOIN orders ON customers.cust_id = orders.cust_id
+GROUP BY customers.cust_id;
 ```
 
 **分析**：`INNER JOIN` 关联 customers 和 orders 表。`GROUP BY` 子句按客户分组数据，因此函数调用 `COUNT (orders.order_num)` 对每个客户的订单计数为 `num_ord`。
 
 ```sql
--- 聚集函数和其他联结一起使用SELECT customers.cust_name,       customers.cust_id,       COUNT(orders.order_num) AS num_ordFROM customers LEFT OUTER JOIN ordersON customers.cust_id = orders.cust_idGROUP BY customers.cust_id;
+-- 聚集函数和其他联结一起使用
+SELECT customers.cust_name, customers.cust_id,       
+COUNT(orders.order_num) AS num_ord
+FROM customers LEFT OUTER JOIN orders ON customers.cust_id = orders.cust_id
+GROUP BY customers.cust_id;
 ```
 
 
@@ -1162,7 +1323,16 @@ MySQL 也允许执行多个查询（多条 SELECT 语句），并将结果作为
 给出每条 `SELECT` 语句，在各条语句之间放上关键字 `UNION`。
 
 ```sql
--- UNION 指示MySQL 执行两条 SELECT 语句，并将输出组合成单个查询结果集 SELECT vend_id, prod_id, prod_priceFROM productsWHERE prod_price <= 5UNIONSELECT vend_id, prod_id, prod_priceFROM productsWHERE vend_id IN(1001, 1002);-- 等价表达SELECT vend_id, prod_id, prod_priceFROM productsWHERE prod_price <= 5	OR vend_id IN (1001, 1002);
+-- UNION 指示MySQL 执行两条 SELECT 语句，并将输出组合成单个查询结果集 
+SELECT vend_id, prod_id, prod_price FROM products
+WHERE prod_price <= 5
+UNION
+SELECT vend_id, prod_id, prod_price FROM products
+WHERE vend_id IN(1001, 1002);
+
+-- 等价表达
+SELECT vend_id, prod_id, prod_price FROM products
+WHERE prod_price <= 5 OR vend_id IN (1001, 1002);
 ```
 
 上述例子中，使用 `UNION` 可能比使用 `WHERE` 子句更加复杂，但对于更复杂的过滤条件，或者从多个表中检索数据的情形，使用 `UNION` 更简单。
@@ -1208,7 +1378,17 @@ MySQL 也允许执行多个查询（多条 SELECT 语句），并将结果作为
 一般在**创建表时启用全文本搜索**。CREATE TABLE 语句（第21章中介绍）接受FULLTEXT 子句，它给出被索引列的一个逗号分隔的列表。
 
 ```sql
--- CREATE TABLE语句定义表productnotes并列出它所包含的列-- 这些列中有一个名为note_text的列，为了进行全文本搜索，MySQL根据子句FULLTEXT(note_text)的指示对它进行索引。CREATE TABLE productnotes(    note_id		int			NOT NULL AUTO_INCREMENT,    prod_id		char(10)	NOT NULL,    note_date	datetime	NOT NULL,    note_text	text		NULL,    PRIMARY KEY(note_id),    FULLTEXT(note_text)) ENGINE = MyISAM;
+-- CREATE TABLE语句定义表productnotes并列出它所包含的列
+-- 这些列中有一个名为note_text的列，为了进行全文本搜索，MySQL根据子句FULLTEXT(note_text)的指示对它进行索引。
+CREATE TABLE productnotes
+(    
+    note_id		int			NOT NULL AUTO_INCREMENT,    
+    prod_id		char(10)	NOT NULL,    
+    note_date	datetime	NOT NULL,    
+    note_text	text		NULL,    
+    PRIMARY KEY(note_id),    
+    FULLTEXT(note_text)
+) ENGINE = MyISAM;
 ```
 
 定义之后，MySQL 自动维护该索引。在增加、更新或者删除行时，<u>索引自动更新</u>。
@@ -1220,7 +1400,8 @@ MySQL 也允许执行多个查询（多条 SELECT 语句），并将结果作为
 索引之后，使用两个函数 Match() 和 Against() 执行全文本搜索，其中 Match() 指定被搜索的列，Against() 指定要使用的搜索表达式。
 
 ```sql
--- SELECT语句检索单个列note_text。WHERE子句执行全文本搜索Match(note_text) 指示MySQL针对指定的列进行搜索，Against('rabbit')指定词rabbit作为搜索文本。由于有两行包含词rabbit，这两个行被返回。SELECT note_textFROM productnotesWHERE Match(note_text) Against('rabbit');
+-- SELECT语句检索单个列note_text。WHERE子句执行全文本搜索Match(note_text) 指示MySQL针对指定的列进行搜索，Against('rabbit')指定词rabbit作为搜索文本。由于有两行包含词rabbit，这两个行被返回。
+SELECT note_text FROM productnotes WHERE Match(note_text) Against('rabbit');
 ```
 
 
@@ -1230,7 +1411,8 @@ MySQL 也允许执行多个查询（多条 SELECT 语句），并将结果作为
 :bulb: ​**搜索不区分大小写**。除非使用BINARY方式（本章中没有介绍），否则全文本搜索不区分大小写。
 
 ```sql
--- 上述搜索的等价表达,但是次序不同SELECT note_textFROM productnotesWHERE note_text LIKE '%rabbit%';
+-- 上述搜索的等价表达,但是次序不同
+SELECT note_text FROM productnotes WHERE note_text LIKE '%rabbit%';
 ```
 
 **分析**：上述两条 `SELECT` 语句都不包含 `ORDER BY` 子句。后者（使用 `LIKE` ）返回数据未指定顺序。前者（使用全文本搜索）返回以文本匹配的良好程度排序的数据。
@@ -1254,7 +1436,13 @@ MySQL 也允许执行多个查询（多条 SELECT 语句），并将结果作为
 - 最后，MySQL 再次进行全文本搜索，这次不仅使用原来的条件，而且还使用所有有用的词。
 
 ```sql
--- 简单的全文本搜索，没有查询扩展-- 只有一行包含词anvils，因此只返回一行。SELECT note_textFROM productnotesWHERE Match(note_text) Against('anvils');-- 相同的搜索，并使用查询扩展-- 这次返回7行。第一行包含词anvils，因此等级最高。第二行与anvils无关，但因为它包含第一行中的两个词（customer和recommend），所以也被检索出来。第3行也包含这两个相同的词，但它们在文本中的位置更靠后且分开得更远，因此也包含这一行，但等级为第三。第三行确实也没有涉及anvils（按它们的产品名）。SELECT note_textFROM productnotesWHERE Match(note_text) Against('anvils' WITH QUERY EXPANSION);
+-- 简单的全文本搜索，没有查询扩展-- 只有一行包含词anvils，因此只返回一行。
+SELECT note_text FROM productnotes
+WHERE Match(note_text) Against('anvils');
+-- 相同的搜索，并使用查询扩展
+-- 这次返回7行。第一行包含词anvils，因此等级最高。第二行与anvils无关，但因为它包含第一行中的两个词（customer和recommend），所以也被检索出来。第3行也包含这两个相同的词，但它们在文本中的位置更靠后且分开得更远，因此也包含这一行，但等级为第三。第三行确实也没有涉及anvils（按它们的产品名）。
+SELECT note_text FROM productnotes
+WHERE Match(note_text) Against('anvils' WITH QUERY EXPANSION);
 ```
 
 **查询扩展增加了返回的行数，但也增加了你实际上并不想要的行数**。
@@ -1275,13 +1463,17 @@ MySQL 也允许执行多个查询（多条 SELECT 语句），并将结果作为
 :bulb: **即使没有 `FULLTEXT` 索引也可以使用**。这一点是布尔方式和迄今为止使用的全文本搜索语法的不同之处，但这种操作非常慢，数据量增加性能会降低。
 
 ```sql
--- IN BOOLEAN MODE的作用演示SELECT note_textFROM productnotesWHERE Match(note_text) Against('heavy' IN BOOLEAN MODE);
+-- IN BOOLEAN MODE的作用演示
+SELECT note_text FROM productnotes
+WHERE Match(note_text) Against('heavy' IN BOOLEAN MODE);
 ```
 
 **分析**：利用关键字 `IN BOOLEAN MODE` 检索包含词 heavy 的所有行（有两行）。其中，没有指定布尔操作符，因此其结果与没有指定布尔方式的结果相同。
 
 ```sql
--- 匹配包含 heavy 但不包含任意以rope开始的词的行SELECT note_textFROM productnotesWHERE Match(note_text) Against('heavy -rope*' IN BOOLEAN MODE);
+-- 匹配包含 heavy 但不包含任意以rope开始的词的行
+SELECT note_text FROM productnotes
+WHERE Match(note_text) Against('heavy -rope*' IN BOOLEAN MODE);
 ```
 
 **分析**：上例中匹配词 heavy，但是 -rope* 明确地指示 MySQL 排除包括 rope* 的行。
@@ -1291,7 +1483,25 @@ MySQL 也允许执行多个查询（多条 SELECT 语句），并将结果作为
 <div align="center"> <img src="Figs/MySQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A_39" width="800"/> </div><br>
 
 ```sql
--- 搜索匹配包含词rabbit和bait的行SELECT note_textFROM productnotesWHERE Match(note_text) Against('+rabbit +bait' IN BOOLEAN MODE);-- 没有指定操作符，搜索匹配包含rabbit和bait中的至少一个词的行SELECT note_textFROM productnotesWHERE Match(note_text) Against('rabbit bait' IN BOOLEAN MODE);-- 匹配短语 rabbit baitSELECT note_textFROM productnotesWHERE Match(note_text) Against('"rabbit bait"' IN BOOLEAN MODE);-- 匹配rabbit 和carrot，增加前者的等级，降低后者的等级SELECT note_textFROM productnotesWHERE Match(note_text) Against('>rabbit <carrot' IN BOOLEAN MODE);-- 匹配词safe和combination，降低后者的等级SELECT note_textFROM productnotesWHERE Match(note_text) Against('+safe +(<combination)' IN BOOLEAN MODE);
+-- 搜索匹配包含词rabbit和bait的行
+SELECT note_text FROM productnotes
+WHERE Match(note_text) Against('+rabbit +bait' IN BOOLEAN MODE);
+
+-- 没有指定操作符，搜索匹配包含rabbit和bait中的至少一个词的行
+SELECT note_text FROM productnotes
+WHERE Match(note_text) Against('rabbit bait' IN BOOLEAN MODE);
+
+-- 匹配短语 rabbit bait
+SELECT note_text FROM productnotes
+WHERE Match(note_text) Against('"rabbit bait"' IN BOOLEAN MODE);
+
+-- 匹配rabbit 和carrot，增加前者的等级，降低后者的等级
+SELECT note_text FROM productnotes
+WHERE Match(note_text) Against('>rabbit <carrot' IN BOOLEAN MODE);
+
+-- 匹配词safe和combination，降低后者的等级
+SELECT note_text FROM productnotes
+WHERE Match(note_text) Against('+safe +(<combination)' IN BOOLEAN MODE);
 ```
 
 :bulb: **排列而不排序**：在布尔方式中，不按等级值降序排序返回的行。
@@ -1324,13 +1534,38 @@ MySQL 也允许执行多个查询（多条 SELECT 语句），并将结果作为
 ## 19.2 插入完整的行
 
 ```sql
--- 插入一个新客户到customers表，存储到每个表列中的数据在VALUES子句中给出，对每个列必须提供一个值。如果某列中没有值，应该使用 NULL 值。各个列必须以它们在表定义中出现的次序填充。INSERT INTO CustomersVALUES(NULL,      'Pep E. LaPew',      '100 Main Street',      'Los Angeles',      'CA',      '90046',      'USA',      NULL,      NULL);
+-- 插入一个新客户到customers表，存储到每个表列中的数据在VALUES子句中给出，对每个列必须提供一个值。如果某列中没有值，应该使用 NULL 值。各个列必须以它们在表定义中出现的次序填充。
+INSERT INTO Customers
+VALUES(NULL,      
+       'Pep E. LaPew',      
+       '100 Main Street',      
+       'Los Angeles',      
+       'CA',      
+       '90046',      
+       'USA',      
+       NULL,      
+       NULL);
 ```
 
 **分析**：上述 SQL 语句依赖表中列的定义次序和该次序获得的信息。即使我们能得到这种次序信息，也不能保证下次表结构变动后各个列保持完全相同的次序。因此，编写依赖于特定列次序的 SQL 语句不安全。
 
 ```sql
--- 等价语法表达，更加安全的 INSERT语句INSERT INTO Customers(cust_name,                     cust_city,                     cust_state,                     cust_zip,                     cust_country,                     cust_contact,                     cust_email)            VALUES('Pep E. LaPew',                  '100 Main Street',                  'Los Angeles',                  'CA',                  '90046',                  'USA',                  NULL,                  NULL);
+-- 等价语法表达，更加安全的 INSERT语句
+INSERT INTO Customers(cust_name,                     
+                      cust_city,                     
+                      cust_state,                     
+                      cust_zip,                     
+                      cust_country,                     
+                      cust_contact,                     
+                      cust_email)            
+                      VALUES('Pep E. LaPew',                  
+                             '100 Main Street',                  
+                             'Los Angeles',                  
+                             'CA',                  
+                             '90046',                  
+                             'USA',                  
+                             NULL,                  
+                             NULL);
 ```
 
 **分析**：上例在表名后的括号里明确地给出了列名。在插入行时，MySQL 将用VALUES 列表中的相应值填入列表中的对应项。
@@ -1352,7 +1587,50 @@ MySQL 也允许执行多个查询（多条 SELECT 语句），并将结果作为
 使用多条 `INSERT ` 语句，甚至一次提交，每条语句用一个分号结束。
 
 ```sql
-INSERT INTO Customers(cust_name,                     cust_address,                     cust_city,                     cust_state,                     cust_zip,                     cust_country)            VALUES('Pep E. LaPew',                  '100 Main Street',                  'Los Angeles',                  'CA',                  '90046',                  'USA');INSERT INTO Customers(cust_name,                     cust_address,                     cust_city,                     cust_state,                     cust_zip,                     cust_country)            VALUES('M. Martian',                  '42 Galaxy Way',                  'New York',                  'NY',                  '11213',                  'USA');                  -- 等价表达，语句组合,单条INSERT语句有多组值，每组值用一对圆括号括起来并用逗号分隔INSERT INTO Customers(cust_name,                     cust_address,                     cust_city,                     cust_state,                     cust_zip,                     cust_country)            VALUES('Pep E. LaPew',                  '100 Main Street',                  'Los Angeles',                  'CA',                  '90046',                  'USA'),            	  ('M. Martian',                  '42 Galaxy Way',                  'New York',                  'NY',                  '11213',                  'USA');
+INSERT INTO Customers(cust_name,                     
+                      cust_address,                     
+                      cust_city,                     
+                      cust_state,                     
+                      cust_zip,                     
+                      cust_country)            
+                      VALUES('Pep E. LaPew',                  
+                             '100 Main Street',                  
+                             'Los Angeles',                  
+                             'CA',                  
+                             '90046',                  
+                             'USA');
+
+INSERT INTO Customers(cust_name,                     
+                      cust_address,                     
+                      cust_city,                     
+                      cust_state,                     
+                      cust_zip,                     
+                      cust_country)            
+                      VALUES('M. Martian',                  
+                             '42 Galaxy Way',                  
+                             'New York',                  
+                             'NY',                  
+                             '11213',                  
+                             'USA');                  
+-- 等价表达，语句组合,单条INSERT语句有多组值，每组值用一对圆括号括起来并用逗号分隔
+INSERT INTO Customers(cust_name,                     
+                      cust_address,                     
+                      cust_city,                     
+                      cust_state,                     
+                      cust_zip,                     
+                      cust_country)            
+                      VALUES('Pep E. LaPew',                  
+                             '100 Main Street',                  
+                             'Los Angeles',                  
+                             'CA',                  
+                             '90046',                  
+                             'USA'),            	  
+                             ('M. Martian',                  
+                              '42 Galaxy Way',                  
+                              'New York',                  
+                              'NY',                  
+                              '11213',                  
+                              'USA');
 ```
 
 上述第二种处理方式组合多条 `INSERT` 语句，可以**提高数据库处理的性能**，因为MySQL <u>用单条 INSERT 语句处理多个插入比使用多条 INSERT 语句快</u>。
@@ -1362,7 +1640,25 @@ INSERT INTO Customers(cust_name,                     cust_address,              
 `INSERT ` 语句将一条 `SELECT` 语句的结果插入表中，也就是 `INSERT SELECT`，由**一条 `INSERT ` 语句和一条 `SELECT` 语句组成**。
 
 ```sql
-INSERT INTO customers(cust_id,                     cust_contact,                     cust_email,                     cust_name,                     cust_address,                     cust_city,                     cust_state,                     cust_zip,                     cust_country)SELECT cust_id,	   cust_contact,	   cust_email,	   cust_name,	   cust_address,	   cust_city,	   cust_state,	   cust_zip,	   cust_countryFROM custnew;
+INSERT INTO customers(cust_id,                     
+                      cust_contact,                     
+                      cust_email,                     
+                      cust_name,                     
+                      cust_address,                     
+                      cust_city,                     
+                      cust_state,                     
+                      cust_zip,                     
+                      cust_country)    
+                  SELECT cust_id,	   
+                      cust_contact,	   
+                      cust_email,	   
+                      cust_name,	   
+                      cust_address,	   
+                      cust_city,	   
+                      cust_state,	   
+                      cust_zip,	   
+                      cust_country
+                  FROM custnew;
 ```
 
 **分析**：上述例子中使用 `INSERT SELECT` 从 custnew 中将所有数据导入customers。`SELECT` 语句从 custnew 检索出要插入的值，而不是列出它们。`SELECT` 中列出的每个列对应于 customers 表名后所跟的列表中的每个列。这条语句将插入多少行有赖于 custnew 表中有多少行。如果这个表为空，则没有行被插入（也不产生错误，因为操作仍然是合法的）。如果这个表确实含有数据，则所有数据将被插入到 customers。
@@ -1389,13 +1685,20 @@ INSERT INTO customers(cust_id,                     cust_contact,                
 `UPDATE` 语句由3部分组成：1）要更新的表；2）列名和它们的新值；3）确定要更新行的过滤条件。
 
 ```sql
--- 更新客户 10005的电子邮件地址UPDATE customersSET cust_email = '13453542220@qq.com'	-- 设置cust_email 为指定值WHERE cust_id = 10005;
+-- 更新客户 10005的电子邮件地址
+UPDATE customers
+SET cust_email = '13453542220@qq.com'	-- 设置cust_email 为指定值
+WHERE cust_id = 10005;
 ```
 
 **分析**：`UPDATE` 语句以要更新的表的名字（customers）开始，`SET` 命令用来将新值赋给被更新的列，`UPDATE` 语句以 `WHERE` 子句为结束（指示 MySQL 更新哪一行）。
 
 ```sql
--- 更新客户 10005的cust_name列和cust_email列UPDATE customersSET cust_name = 'Tom',	cust_email = '13453542220@qq.com'WHERE cust_id = 10005;
+-- 更新客户 10005的cust_name列和cust_email列
+UPDATE customers
+SET cust_name = 'Tom',	
+	cust_email = '13453542220@qq.com'
+WHERE cust_id = 10005;
 ```
 
 **分析**：更新多个列时，只需要使用单个 `SET` 命令，每个 列-值 对之间用逗号分隔（最后一列之后不用逗号）。
@@ -1413,7 +1716,8 @@ UPDATE IGNORE customers…
 **如果要删除某个列的值，可以将它设置为 `NULL` （前提是表定义允许 NULL 值）**。
 
 ```sql
--- NULL 用于去除cust_email列中的值UPDATE customersSET cust_email = NULLWHERE cust_id = 10005;
+-- NULL 用于去除cust_email列中的值
+UPDATE customers SET cust_email = NULL WHERE cust_id = 10005;
 ```
 
 
@@ -1426,7 +1730,8 @@ UPDATE IGNORE customers…
 - 从表中删除所有行。
 
 ```sql
--- 从customers表中删除一行DELETE FROM customersWHERE cust_id = 10006;
+-- 从customers表中删除一行
+DELETE FROM customers WHERE cust_id = 10006;
 ```
 
 **分析**：`DELETE FROM` 要求指定从中删除数据的表名。`WHERE` 子句过滤要删除的行。`DELETE` 不需要列名或通配符。`DELETE` 删除整行而不是删除列。若要删除指定的列，需使用 `UPDATE` 语句。
@@ -1465,7 +1770,19 @@ UPDATE IGNORE customers…
 - 表列的名字和定义，用逗号分隔。
 
 ```sql
--- 创建customers表CREATE TABLE customers (    cust_id			int			NOT NULL AUTO_INCREMENT,    cust_name		char(50)	NOT NULL ,    cust_address	char(50)	NULL ,    cust_city		char(50)	NULL ,    cust_state		char(5)		NULL ,    cust_zip		char(10)	NULL ,    cust_country	char(50)	NULL ,    cust_contact	char(50)	NULL ,    cust_email		char(255)	NULL ,    PRIMARY KEY (cust_id)) ENGINE=InnoDB;
+-- 创建customers表
+CREATE TABLE customers (    
+    cust_id			int			NOT NULL AUTO_INCREMENT,    
+    cust_name		char(50)	NOT NULL ,    
+    cust_address	char(50)	NULL ,    
+    cust_city		char(50)	NULL ,    
+    cust_state		char(5)		NULL ,    
+    cust_zip		char(10)	NULL ,    
+    cust_country	char(50)	NULL ,    
+    cust_contact	char(50)	NULL ,    
+    cust_email		char(255)	NULL ,    
+    PRIMARY KEY (cust_id)
+) ENGINE=InnoDB;
 ```
 
 **分析**：`CREATE TABLE` 关键字之后为表名，表定义（所有列）括在圆括号之中，各列之间用逗号分隔。表的主键可以在创建表时用 `PRIMARY KEY` 关键字指定。整条语句由右圆括号后的分号结束。
@@ -1479,7 +1796,26 @@ UPDATE IGNORE customers…
 **NULL 值就是没有值或缺值**。允许 NULL 值的列允许在插入行时不给出该列的值。不允许 NULL 值的列在插入或更新行时，该列必须有值。
 
 ```sql
--- 表的定义决定该表列的属性，NULL 或者 NOT NULL-- 创建 orders 表，每个列的定义都含有关键字NOT NULLCREATE TABLE orders (    order_num		int			NOT NULL AUTO_INCREMENT,    order_date		datetime	NOT NULL ,	cust_id			int			NOT NULL ,    PRIMARY KEY (order_num))ENGINE=InnoDB;-- 创建vendors 表，混合了NULL和NOT NULL列的表CREATE TABLE vendors (    vend_id			int			NOT NULL AUTO_INCREMENT,    vend_name		char(50)	NOT NULL ,    vend_address	char(50)	NULL ,    vend_city		char(50)	NULL ,    vend_state		char(5)		NULL ,    vend_zip		char(10)	NULL ,    vend_country	char(50)	NULL ,    PRIMARY	KEY (vend_id))ENGINE=InnoDB;
+-- 表的定义决定该表列的属性，NULL 或者 NOT NULL
+-- 创建 orders 表，每个列的定义都含有关键字NOT NULL
+CREATE TABLE orders (    
+    order_num		int			NOT NULL AUTO_INCREMENT,    
+    order_date		datetime	NOT NULL ,	
+    cust_id			int			NOT NULL ,    
+    PRIMARY KEY (order_num)
+)ENGINE=InnoDB;
+
+-- 创建vendors 表，混合了NULL和NOT NULL列的表
+CREATE TABLE vendors (    
+    vend_id			int			NOT NULL AUTO_INCREMENT,    
+    vend_name		char(50)	NOT NULL ,    
+    vend_address	char(50)	NULL ,    
+    vend_city		char(50)	NULL ,    
+    vend_state		char(5)		NULL ,    
+    vend_zip		char(10)	NULL ,    
+    vend_country	char(50)	NULL ,    
+    PRIMARY	KEY (vend_id)
+)ENGINE=InnoDB;
 ```
 
 
@@ -1491,7 +1827,15 @@ UPDATE IGNORE customers…
 **主键值是唯一的**。如果主键使用单个列，则它的值必须唯一。<u>如果使用多个列，则这些列的组合值必须唯一</u>。
 
 ```sql
--- 创建多个列组成的主键，以逗号分隔的列表给出各列名CREATE TABLE orderitems (	order_num		int				NOT NULL ,    order_item		int				NOT NULL ,    prod_id			char(10)		NOT NULL ,    quantity		int				NOT NULL ,    item_price		decimal(8,2)	NOT NULL ,    PRIMARY KEY (order_num, order_item))ENGINE=InnoDB;
+-- 创建多个列组成的主键，以逗号分隔的列表给出各列名
+CREATE TABLE orderitems (	
+    order_num		int				NOT NULL ,    
+    order_item		int				NOT NULL ,    
+    prod_id			char(10)		NOT NULL ,    
+    quantity		int				NOT NULL ,    
+    item_price		decimal(8,2)	NOT NULL ,    
+    PRIMARY KEY (order_num, order_item)
+)ENGINE=InnoDB;
 ```
 
 
@@ -1503,7 +1847,8 @@ UPDATE IGNORE customers…
 ### 21.1.4 使用AUTO_INCREMENT
 
 ```sql
--- 取自本章开始处，创建customers表cust_id			int			NOT NULL AUTO_INCREMENT,
+-- 取自本章开始处，创建customers表
+cust_id			int			NOT NULL AUTO_INCREMENT,
 ```
 
 **分析**：`AUTO_INCREMENT` **告诉 MySQL，本列每增加一行时会自动增量**。每次
@@ -1512,7 +1857,8 @@ UPDATE IGNORE customers…
 **每个表只允许一个 `AUTO_INCREMENT` 列，而且它必须被索引**（如让它成为主键）。
 
 ```sql
--- 返回最后一个 AUTO_INCREMENT 值，然后将它用于后续的 MySQL 语句SELECT last_insert_id()
+-- 返回最后一个 AUTO_INCREMENT 值，然后将它用于后续的 MySQL 语句
+SELECT last_insert_id()
 ```
 
 
@@ -1522,7 +1868,15 @@ UPDATE IGNORE customers…
 如果在插入行时没有给出值，MySQL 允许指定此时使用的默认值。**默认值用`CREATE TABLE` 语句的列定义中的 `DEFAULT` 关键字指定。**
 
 ```sql
--- quantity,订单中每项物品的数量默认为1CREATE TABLE orderitems (	order_num		int				NOT NULL ,    order_item		int				NOT NULL ,    prod_id			char(10)		NOT NULL ,    quantity		int				NOT NULL DEFAULT 1,    item_price		decimal(8,2)	NOT NULL ,    PRIMARY KEY (order_num, order_item)) ENGINE=InnoDB;
+-- quantity,订单中每项物品的数量默认为1
+CREATE TABLE orderitems (	
+    order_num		int				NOT NULL ,    
+    order_item		int				NOT NULL ,    
+    prod_id			char(10)		NOT NULL ,    
+    quantity		int				NOT NULL DEFAULT 1,    
+    item_price		decimal(8,2)	NOT NULL ,    
+    PRIMARY KEY (order_num, order_item)
+) ENGINE=InnoDB;
 ```
 
 
@@ -1561,7 +1915,11 @@ MySQL 有一个具体管理和处理数据的内部引擎，但 MySQL 与其他 
 - 所做更改的列表。
 
 ```sql
--- 给vendors表增加一个 vend_phone 列ALTER TABLE vendorsADD vend_phone CHAR(20);-- 删除刚刚添加的列ALTER TABLE vendorsDROP COLUMN vend_phone;
+-- 给vendors表增加一个 vend_phone 列
+ALTER TABLE vendors ADD vend_phone CHAR(20);
+
+-- 删除刚刚添加的列
+ALTER TABLE vendors DROP COLUMN vend_phone;
 ```
 
 
@@ -1569,7 +1927,14 @@ MySQL 有一个具体管理和处理数据的内部引擎，但 MySQL 与其他 
 `ALTER TABLE` 的一种常见用途是**定义外键**。下面是用来定义本书中的表所用的外键的代码：
 
 ```sql
--- 更改2不同的表，使用2条ALTER TABLE语句ALTER TABLE orderitemsADD CONSTRAINT fk_orderitems_ordersFOREIGN KEY (order_num) REFERENCES orders (order_num);ALTER TABLE orderitemsADD CONSTRAINT fk_orderitems_productsFOREIGN KEY (prod_id) REFERENCES products (prod_id);...
+-- 更改2不同的表，使用2条ALTER TABLE语句
+ALTER TABLE orderitems
+ADD CONSTRAINT fk_orderitems_orders
+FOREIGN KEY (order_num) REFERENCES orders (order_num);
+
+ALTER TABLE orderitems
+ADD CONSTRAINT fk_orderitems_products
+FOREIGN KEY (prod_id) REFERENCES products (prod_id);...
 ```
 
 
@@ -1594,7 +1959,8 @@ MySQL 有一个具体管理和处理数据的内部引擎，但 MySQL 与其他 
 `DROP TABLE` 语句，删除表没有确认，也不能撤销，执行这条语句将永久删除该表。
 
 ```sql
--- 删除customers表（假设它存在）。DROP TABLE customers;
+-- 删除customers表（假设它存在）。
+DROP TABLE customers;
 ```
 
 
@@ -1604,19 +1970,36 @@ MySQL 有一个具体管理和处理数据的内部引擎，但 MySQL 与其他 
 `RENAME TABLE` 语句
 
 ```sql
--- 将customers表重新命名为customers表RENAME TABLE customers TO customers;-- 对多个表重命名RENAME TABLE backup_customers TO customers;			 backup_vendors TO vendors;			 backup_products TO products;
+-- 将customers表重新命名为customers表
+RENAME TABLE customers TO customers;
+-- 对多个表重命名
+RENAME TABLE backup_customers TO customers;			 
+			backup_vendors TO vendors;			 
+			backup_products TO products;
 ```
 
 
 
 # 第 22 章 使用视图
 
+:bulb: 视图主要用于数据检索（`SELECT`），而不用于更新（`INSERT、UPDATE和 DELETE`）。
+
+:bookmark_tabs:  视图是虚拟的表，它们包含的不是数据而是根据需要检索数据的查询。
+
 ## 22.1 视图
 
 **视图是虚拟的表**。不同于包含数据的表，视图只包含<u>使用时动态检索数据的查询</u>。
 
 ```sql
--- SELECT语句从3个表中检索数据SELECT cust_name, cust_contactFROM customers, orders, orderitemsWHERE customers.cust_id = orders.cust_id  AND orderitems.order_num = orders.order_num  AND prod_id = 'TNT2';  -- 把整个查询包装成一个名为productcustomers的虚拟表，等价表达为SELECT cust_name, cust_contactFROM productcustomersWHERE prod_id = 'TNT2';
+-- SELECT语句从3个表中检索数据
+SELECT cust_name, cust_contact
+FROM customers, orders, orderitems
+WHERE customers.cust_id = orders.cust_id  
+	AND orderitems.order_num = orders.order_num  
+	AND prod_id = 'TNT2';  
+
+-- 把整个查询包装成一个名为productcustomers的虚拟表，等价表达为
+SELECT cust_name, cust_contact FROM productcustomers WHERE prod_id = 'TNT2';
 ```
 
 上述 productcustomers 就是一个视图，它**不包含表中应该有的任何列或数据，它包含的是一个 SQL 查询**。
@@ -1677,22 +2060,607 @@ WHERE customers.cust_id = orders.cust_id
 为检索订购了 TNT2 产品的客户，如下：
 
 ```sql
-SELECT cust_name, cust_contact
-FROM productcustomers
-WHERE prod_id = 'TNT2';
+SELECT cust_name, cust_contact FROM productcustomers WHERE prod_id = 'TNT2';
 ```
 
 **分析**：WHERE 子句从视图中检索特定数据。在 MySQL 处理此查询时，它将指定的WHERE 子句添加到视图查询中的已有 WHERE 子句中，以便正确过滤数据。
 
 **利用视图，可一次性编写基础的SQL，然后根据需要多次使用**。
 
-
-
 ### 22.2.2 用视图重新格式化检索出的数据
 
+```sql
+-- 使用SELECT语句相同的查询创建视图
+CREATE VIEW vendorlocations AS
+SELECT Concat(RTrim(vend_name), ' (', RTrim(vend_country), ')')
+	AS vend_title
+FROM vendors
+ORDER BY vend_name;
+
+-- 检索出已创建的所有邮件标签的数据
+SELECT * FROM vendorlocations;
+```
+
+### 22.2.3 用视图过滤不想要的数据
+
+```sql
+-- 过滤没有电子邮件地址的客户
+CREATE VIEW customeremail AS
+SELECT cust_id, cust_name, cust_email
+FROM customers
+WHERE cust_email IS NOT NULL;
+```
+
+### 22.2.4 使用视图与计算字段
+
+```sql
+SELECT * FROM customeremail WHERE cust_id = 10001;
+```
+
+### 22.2.5 更新视图
+
+**通常，视图可以更新**（即，可对它们使用 `INSERT`、`UPDATE`和 `DELETE`）。更新一个视图将<u>更新其基表</u>（视图本身没有数据）。如果你对视图增加或删除行，实际上是对其基表增加或删除行。
+
+**但是， 当 MySQL 不能正确地确定被更新的基数据**，**则不允许更新**（包括插入和删除）。也即，如果视图定义中有以下操作，则不能更新视图：
+
+- 分组（使用 `GROUP BY` 和 `HAVING`）；
+- 联结；
+- 子查询；
+- 并；
+- 聚集函数（MIN()、COUNT()、SUM() 等）；
+- DISTINCT；
+- 导出列。
 
 
 
+# 第 23 章 使用存储过程
+
+:star: **存储过程**：保存的一条或多条 MySQL 语句的集合。可将其视为批文件，虽然它们的作用不仅限于批处理。
+
+<u>为什么使用存储过程</u>：
+
+- 将处理封装在容易使用的单元中，简化复杂操作；
+- 防止错误保证了数据的一致性；
+- 简化对变动的管理；
+- 提高性能，使用存储过程比使用单独的 SQL 语句要快；
+
+**优点总结**：存储过程主要有 3 个好处，简单、安全、高性能。
+
+**缺点总结**：存储过程的编写比基本的 SQL 语句复杂，用户权限限制。
+
+## 23.3 使用存储过程
+
+存储过程的执行远比其定义更常见，本章先讲存储过程的执行、再讲创建和使用存储过程。
+
+### 23.3.1 执行存储过程
+
+**存储过程的执行**（MySQL 中称为**调用**），执行语句为 `CALL` 。
+
+```sql
+-- 执行存储过程productpricing，计算并返回产品的最低、最高和平均价格。
+CALL productpricing(@pricelow,
+                    @pricehigh,
+                    @priceaverage);
+```
+
+### 23.3.2 创建存储过程
+
+```sql
+-- 一个返回产品平均价格的存储过程
+CREATE PROCEDURE productpricing()
+BEGIN		-- BEGIN 以及 END 限定存储过程体
+	SELECT Avg(prod_price) AS priceaverage		-- 内部为过程体
+	FROM products;
+END;
+
+-- 调用上述创建的存储过程并显示返回结果
+CALL productpricing();
+```
+
+**分析1**：存储过程名为 productpricing，定义语句： `CREATE PROCEDURE productpricing(参数)`。<u>此存储过程没有参数，但 () 不能省略</u>。
+
+**分析2**：存储过程是一种函数，其后面需要 **() 符号**；
+
+### 23.3.3 删除存储过程
+
+```sql
+-- 删除刚刚创建的存储过程
+DROP PROCEDURE productpricing;		-- 后面没有 () 符号，只需要给出存储过程名
+
+-- 安全的删除语法
+DROP PROCEDURE productpricing IF EXISTS;
+```
+
+### 23.3.4 使用参数
+
+存储过程一般不显示结果，而将结果返回给你指定的变量。
+
+### 23.3.5 建立智能存储过程
+
+**:bulb: IF语句**：IF 语句还支持 ELSEIF 和 ELSE 子句，前者还使用 THEN 子句，后者不使用。
+
+### 23.3.6 检查存储过程
+
+```sql
+-- 显示用来创建一个存储过程的 CREATE 语句
+SHOW CREATE PROCEDURE ordertotal;
+
+-- 获得包括何时、由谁创建等详细信息的存储过程列表
+SHOW PROCEDURE STATUS;
+
+-- 限制过程状态结果, LIKE 指定一个过滤模式
+SHOW PROCEDURE STATUS LIKE 'ordertotal';
+```
 
 
 
+# 第 24 章 使用游标
+
+:star: **游标（cursor）**：是一个存储在 MySQL 服务器上的数据库查询，它不是一条 SELECT 语句，而是被该语句检索出来的结果集。在存储了游标之后，应用程序可以根据需要滚动或浏览其中的数据。
+
+游标主要用于交互式应用，其中用户需要滚动屏幕上的数据，并对数据进行浏览或做出更改。
+
+MySQL 游标**只能用于存储过程（和函数）**。
+
+## 24.2 使用游标
+
+- 先声明（定义），后使用游标。这个过程实际上没有检索数据，它只是<u>定义要使用的 SELECT 语句</u>。
+- 声明后，必须打开游标以供使用。这个过程用前面定义的 <u>SELECT 语句把数据实际检索出来</u>。
+- 对于填有数据的游标，根据需要取出（检索）各行。
+- 游标<u>使用后，必须关闭游标</u>。
+
+### 24.2.1 创建游标
+
+```sql
+-- 定义名为 ordernumbers 的游标，使用可以检索所有订单的 SELECT 语句
+CREATE PROCEDURE processorders()
+BEGIN
+	DECLARE ordernumbers CURSOR
+	FOR
+	SELECT order_num FROM orders;
+END;
+```
+
+### 24.2.2 打开和关闭游标
+
+```sql
+-- 打开
+OPEN ordernumbers;
+-- 关闭
+CLOSE ordernumbers;
+```
+
+CLOSE <u>释放游标使用的所有内部内存和资源</u>，每个游标不再需要时都应该关闭。
+
+### 24.2.3 使用游标数据
+
+`FETCH` 指定检索什么数据（所需的列），检索出来的数据存储在何处。它还向前移动游标中的内部行指针，使下一条 `FETCH` 语句检索下一行（不重复读取同一行）。
+
+:warning: **`DECLARE` 语句的次序**：DECLARE 语句定义的局部变量必须在定义任意游标或句柄之前定义，而<u>句柄必须在游标之后定义</u>。
+
+
+
+# 第 25 章 使用触发器
+
+:star: **触发器**：MySQL 响应以下任意语句而<u>自动执行的一条 MySQL 语句</u>（或位于 BEGIN 和 END 语句之间的一组语句）：
+
+- DELETE、INSERT、UPDATE
+
+## 25.2 创建触发器
+
+创建触发器时，需给出 4 条信息：
+
+- **唯一的**触发器名，每个表中必须唯一；
+- 触发器**关联的表**；
+- 触发器应该**响应的活动**（DELETE、INSERT 或 UPDATE）；
+- 触发器**何时执行**（处理之前或之后）。
+
+```sql
+-- 创建名为 newproduct 的新触发器
+-- AFTER INSERT 表示此触发器将在 INSERT 语句成功执行之后执行
+-- FOR EACH ROW 表示对每个插入行执行，文本 Product added 对每个插入的行显示一次
+CREATE TRIGGER newproduct AFTER INSERT ON products
+FOR EACH ROW SELECT 'Product added';
+```
+
+:bulb: **仅支持表**：只有表才支持触发器，视图和临时表都不支持。
+
+
+
+触发器按每个表每个事件每次地定义，每个表每个事件每次只允许一个触发器。因此，每个表最多支持6个触发器（每条 INSERT、UPDATE 和 DELETE 的之前和之后）。
+
+单一触发器不能与多个事件或多个表关联，当需要一个对 INSERT 和 UPDATE 操作执行的触发器，则应该定义两个触发器。
+
+:bulb: **触发器失败**：如果 BEFORE 触发器失败，则 MySQL 将不执行请求的操作。此外，如果BEFORE 触发器或语句本身失败，MySQL 将不执行 AFTER 触发器。
+
+## 25.3 删除触发器
+
+```sql
+-- 删除触发器
+DROP TRIGGER newproduct;
+```
+
+触发器不能更新或覆盖，为了修改一个触发器，必须先删除它，然后再重新创建。
+
+## 25.4 使用触发器
+
+### 25.4.1 INSERT触发器
+
+INSERT 触发器在 **INSERT 语句执行之前或之后**执行。需要知道以下几点：
+
+- 在 INSERT 触发器代码内，可引用一个名为 NEW 的虚拟表，访问被插入的行；
+- 在 BEFORE INSERT 触发器中，NEW 中的值也可以被更新（允许更改被插入的值）；
+- 对于 AUTO_INCREMENT 列，NEW 在 INSERT 执行之前包含 0，在 INSERT 执行之后包含新的自动生成值。
+
+```sql
+-- 创建neworder触发器
+-- 按照 AFTER INSERT ON orders 执行
+-- 在插入一个新订单到 orders 表时，MySQL 生成一个新订单号并保存到 order_num 中，触发器从 NEW. order_num 取得这个值并返回它
+CREATE TRIGGER neworder AFTER INSERT ON orders
+FOR EACH ROW SELECT NEW.order_num;
+```
+
+:bulb: **BEFORE 或 AFTER ？** 通常，将 BEFORE 用于数据验证和净化（目的是保证插入表中的数据确实是需要的数据）。这也适用于 UPDATE 触发器。
+
+### 25.4.2 DELETE触发器
+
+DELETE 触发器在 **DELETE 语句执行之前或之后**执行。需要知道以下两点：
+
+- 在 DELETE 触发器代码内，你可以引用一个名为 OLD 的虚拟表，访问被删除的行；
+- OLD 中的值全都是只读的，不能更新。
+
+```sql
+-- OLD保存将要被删除的行到一个存档表中
+CREATE TRIGGER deleteorder BEFORE DELETE ON orders
+FOR EACH ROW
+BEGIN
+	INSERT INTO archive_orders(order_num, order_date, cust_id)
+	VALUES(OLD.order_num, OLD.order_date, OLD.cust_id);
+END;
+```
+
+### 25.4.3 UPDATE触发器
+
+UPDATE 触发器在 **UPDATE 语句执行之前或之后执行**。需要知道以下几点：
+
+- 在 UPDATE 触发器代码中，你可以引用一个名为 OLD 的虚拟表访问以前（UPDATE 语句前）的值，引用一个名为 NEW 的虚拟表访问新更新的值；
+- 在 BEFORE UPDATE 触发器中，NEW 中的值可能也被更新（允许更改将要用于UPDATE 语句中的值）；
+- OLD 中的值全都是只读的，不能更新。
+
+```sql
+-- 更新每行时，NEW.vend_state 中的值（将用来更新表行的值）都用Upper(NEW.vend_state)替换。
+CREATE TRIGGER updatevendor BEFORE UPDATE ON vendors
+FOR EACH ROW SET NEW.vend_state = Upper(NEW.vend_state);
+```
+
+
+
+不能从触发器内调用存储过程，所需的存储过程代码需要复制到触发器内。
+
+
+
+# 第26章 管理事务处理
+
+COMMIT 和 ROLLBACK 语句来管理事务处理
+
+## 26.1 事务处理
+
+事务处理（transaction processing）用来**维护数据库的完整性**。
+
+事务处理是一种**机制**，用来管理必须**成批执行的 MySQL 操作**，以**保证数据库不包含不完整的操作结果**。
+
+:star: **事务** （transaction）：一组 SQL 语句；
+
+:star: **回退**（rollback）：撤销指定 SQL 语句的过程；
+
+:star: **提交**（commit）：将未存储的 SQL 语句结果写入数据库表；
+
+:star: **保留点**（savepoint）：事务处理中设置的临时占位符（placeholder），你可以对它发布回退（与回退整个事务处理不同）。
+
+## 26.2 控制事务处理
+
+**管理事务处理的关键**：将 SQL 语句组分解为逻辑块，并明确规定数据何时应该回退，何时不应该回退。
+
+MySQL 使用 `START TRANSACTION` **标识事务的开始**。
+
+### 26.2.1 使用 ROLLBACK
+
+```sql
+-- 撤销 MySQL 语句
+START TRANSACTION;
+DELETE FROM ordertotals;	-- 事务处理，删除ordertotals表中的所有行
+SELECT * FROM ordertotals;
+ROLLBACK;
+SELECT * FROM ordertotals;
+```
+
+**ROLLBACK 只能在一个事务处理内使用**（在执行一条START TRANSACTION命令之后）。
+
+
+:bulb: **哪些语句可以回退**？事务处理用于管理 `INSERT、UPDATE 和 DELETE` 语句，不能回退 `SELECT` 语句，不能回退 `CREATE` 或者 `DROP` 操作。
+
+### 26.2.2 使用COMMIT
+
+**一般的 MySQL 语句是直接针对数据库表执行和编写**。这就是<u>隐含提交</u>（implicit commit），即提交（写或保存）操作是自动进行的。
+
+在事务处理块中，提交不会隐含地进行。**为进行明确的提交**，使用 COMMIT 语句，如下所示：
+
+```sql
+-- 从系统中完全删除订单 20010，最后的 COMMIT 语句仅在不出错时写出更改。如果第一条语句 DELETE 起作用，但第二条失败，则 DELETE 不会提交。
+START TRANSACTION;
+DELETE FROM orderitems WHERE order_num = 20010;
+DELETE FROM orders WHERE order_num = 20010;
+COMMIT;
+```
+
+:bulb: **隐含事务关闭**。当 COMMIT 或 ROLLBACK 语句执行后，事务会自动关闭（将来的更改会隐含提交）。
+
+### 26.2.3 使用保留点
+
+为支持回退部分事务处理，必须能在事务处理块中合适的位置放置<u>占位符</u>。这样，如果需要回退，可以回退到某个占位符。
+
+```sql
+-- 创建占位符
+SAVEPOINT delete1;
+```
+
+每个保留点都取标识它的唯一名字，以便在回退时，MySQL 知道要回退到何处。为了回退到本例给出的保留点，可如下进行：
+
+```sql
+ROLLBACK TO delete1;
+```
+
+:bulb: **保留点越多越好**。保留点越多，你就能按自己的意愿灵活地进行回退。
+
+:bulb: **释放保留点**。 **保留点在事务处理完成后自动释放**。自 MySQL 5以来，也可以用 `RELEASE SAVEPOINT` 明确地释放保留点。
+
+### 26.2.4 更改默认的提交行为
+
+默认的 MySQL 行为是自动提交所有更改。（任何时候你执行一条 MySQL 语句，该语句实际上都是针对表执行的，而且所做的更改立即生效。）
+
+```sql
+-- 指示 MySQL 不自动提交更改
+SET autocommit=0;
+```
+
+:bulb: autocommit 标志是**针对每个连接**而不是服务器的。
+
+
+
+# 第27章 全球化和本地化
+
+:star: **字符集**：字母和符号的集合。
+
+:star: **编码**：某个字符集成员的内部表示。
+
+:star: **校对**：规定字符如何比较的指令。
+
+## 27.2 使用字符集和校对顺序
+
+```sql
+-- 显示所有的字符集，以及每个字符集的描述和默认校对
+SHOW CHARACTER SET;
+
+-- 显示所有可用的校对，以及他们适用的字符集
+SHOW COLLATION;
+
+-- 确定所用的字符集和校对
+SHOW VARIABLES LIKE 'character%';
+SHOW VARIABLES LIKE 'collation%';
+
+-- 给表指定字符集和校对,其中创建一个包含两列的表，并指定一个字符集和一个校对顺序
+CREATE TABLE mytable
+(
+    columnn1	INT,
+    columnn1	VARCHAR(10)
+) DEFAULT CHARACTER SET hebrew_general_ci;
+```
+
+
+
+# 第28章 安全管理
+
+MySQL 的访问控制和用户管理。
+
+## 28.1 访问控制
+
+:star: **访问控制**：给用户提供他们所需的访问权，且仅提供他们所需的访问权。
+
+不要在日常的 MySQL 操作中使用 root。
+
+## 28.2 管理用户
+
+```sql
+USE mysql;
+SELECT user FROM user;
+-- 输出 root
+```
+
+### 28.2.1 创建用户账号
+
+```sql
+-- 创建新用户账户，用户名为 ben，口令为 p@$$w0rd
+CREATE USER ben IDENTIFIED BY 'p@$$w0rd';
+```
+
+:bulb: **指定散列口令**。`IDENTIFIED BY` 指定的口令为纯文本，MySQL 将在保存到 user 表之前对其进行加密。为了作为散列值指定口令，使用 IDENTIFIED BY PASSWORD。
+
+```sql
+-- 用户账户重命名
+RENAME USER ben TO bforta;
+```
+
+### 28.2.2 删除用户账号
+
+```sql
+-- 删除用户账户
+DROP USER bforta;
+-- 若使用旧版的 MySQL,要先用 REVOKE 删除账户相关权限，然后用DROP USER删除账户
+```
+
+### 28.2.3 设置访问权限
+
+```sql
+-- 查看赋予用户账户的权限
+SHOW GRANTS FOR bforta;
+```
+
+
+
+**GRANT 语句设置权限，其要求你至少给出以下信息：**
+
+- 要授予的权限；
+- 被授予访问权限的数据库或表；
+- 用户名。
+
+```sql
+-- 此 GRANT 允许用户在 crashcourse.* (crashcourse数据库的所有表)上使用 SELECT 
+SELECT ON crashcourse.* TO bforta;
+-- 撤销特定的权限
+REVOKE SELECT ON crashcourse.* FROM bforta;
+```
+
+
+
+**GRANT 和 REVOKE 可在几个层次上控制访问权限：**
+
+- 整个服务器，使用 GRANT ALL 和 REVOKE ALL；
+- 整个数据库，使用 ON database.*；
+- 特定的表，使用 ON database.table；
+- 特定的列；
+- 特定的存储过程。
+
+<div align="center"> <img src="Figs/MySQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A_40" width="650"/> </div><br>
+
+<div align="center"> <img src="Figs/MySQL%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A_41" width="650"/> </div><br>
+
+:bulb: **简化多次授权**。列出各权限并用逗号分隔，将多条 GRANT 语句串在一起。
+
+```sql
+GRANT SELECT, INSERT ON crashcourse.* TO bforta;
+```
+
+
+
+### 28.2.4 更改口令
+
+```sql
+-- SET PASSWORD更新用户口令,新口令必须传递到 Password() 函数进行加密
+SET PASSWORD FOR bforta = Password('n3w p@$$w0rd');
+
+-- 设置你自己的口令
+SET PASSWORD = Password('n3w p@$$w0rd');
+```
+
+
+
+# 第29章 数据库维护
+
+## 29.1 备份数据
+
+MySQL 数据库是**基于磁盘的文件**。
+
+- 使用命令行实用程序 mysqldump 转储所有数据库内容到某个外部文件。
+- 可用命令行实用程序 mysqlhotcopy 从一个数据库复制所有数据（并非所有数据库引擎都支持这个实用程序）。
+- 使用 MySQL 的 BACKUP TABLE 或 SELECT INTO OUTFILE 转储所有数据到某个外部文件。数据可以用 RESTORE TABLE来复原。
+
+:bulb: **首先刷新未写数据**。为保证所有数据被写到磁盘（包括索引数据），可能需要在进行备份前使用 `FLUSH TABLES` 语句。
+
+## 29.2 进行数据库维护
+
+```sql
+-- ANALYZE TABLE 检查表键是否正确
+ANALYZE TABLE orders;
+
+-- CHECK TABLE 针对许多问题对表进行检查，
+CHECK TABLE orders, orderitems;
+```
+
+## 29.3 诊断启动问题
+
+```sql
+-- 显示帮助
+--help
+
+-- 装载减去某些最佳配置的服务器
+--safe-mode
+
+-- 显示全文本消息
+--verbose
+
+-- 显示版本信息然后退出
+--version
+```
+
+## 29.4 查看日志文件
+
+```sql
+-- 错误日志,其包含启动和关闭问题以及任意关键错误的细节，日志名常为hostname.err
+--log-error
+
+-- 查询日志，其记录所有MySQL活动，其名字常为 hostname.log
+--log
+
+-- 二进制日志，其记录更新过数据（或者可能更新过数据）的所有语句，其名字常为hostname-bin
+--log-bin
+
+-- 缓慢查询日志，其记录执行缓慢的任何查询，其名字为hostname-slow.log
+--log-slow-queries
+
+-- 刷新和重新开始所有日志文件
+FLUSH LOGS
+```
+
+
+
+# 第30章 改善性能
+
+**性能优化规则**：
+
+- 遵循 MySQL 的硬件建议；
+
+- 关键的生产 DBMS 应运行在自己的专用服务器上，根据实际应用需要调整内存分配、缓冲区大小；
+
+  ```sql
+  -- 查看当前设置
+  SHOW VARIABLES;		-- 或者
+  SHOW STATUS;
+  ```
+
+- MySQL 是一个多用户多线程的 DBMS（它经常同时执行多个任务）。如果这些任务中的某一个执行缓慢，则所有请求都会执行缓慢。如果遇到性能差的情况，需要排查进程状态；
+
+  ```sql
+  -- 显示所有活动进程
+  SHOW PROCESSLIST;
+  
+  -- 终止某个特定的进程
+  KILL
+  ```
+
+  
+
+- 试验多种方法（如联结、并、子查询）来找出性能最优的 `SELECT` 语句；
+
+- `EXPLAIN`语句可用于让 MySQL 解释它将如何执行一条 `SELECT` 语句；
+
+- 一般来说，存储过程执行速度快于一条一条地执行其中的各条 MySQL 语句；
+
+- 正确使用数据类型；
+
+- 按实际需求检索数据，不要用 `SELECT *`。
+
+- 有的操作（包括 `INSERT `）支持一个可选的 `DELAYED`关键字，如果使用它，将把控制立即返回给调用程序，并且一旦有可能就实际执行该操作。
+
+- 导入数据时要关闭自动提交。你可能还想删除索引（包括 `FULLTEXT ` 索引），然后在导入完成后再重建它们。
+
+- 必须索引数据库表以改善数据检索的性能。确定索引什么不是一件微不足道的任务，需要分析使用的 `SELECT` 语句以找出重复的 `WHERE`和 `ORDER BY` 子句。如果一个简单的 `WHERE` 子句返回结果所花的时间太长，则可以断定其中使用的列（或几个列）就是需要索引的对象。
+
+- 使用多条 `SELECT` 语句和连接它们的 `UNION` 语句**替换** `SELECT` 语句中的一系列复杂的 `OR` 条件；
+
+- 索引改善数据检索的性能，但损害数据插入、删除和更新的性能。如果你有一些表，它们收集数据且不经常被搜索，则在有必要之前不要索引它们。（索引可根据需要添加和删除。）
+
+- 最好是使用 `FULLTEXT` 而不是 `LIKE`。（`LIKE` 很慢）
+
+- 数据库是不断变化的实体，理想的优化和配置要根据表的使用和内容的更改而进行调整。
+
+- 最重要的规则：**每条规则在某些条件下都会被打破**。

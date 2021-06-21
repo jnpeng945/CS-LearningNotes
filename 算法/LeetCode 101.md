@@ -111,7 +111,7 @@ public:
 //      }
 ```
 
-## 1.2 区间问题
+### 1.2 区间问题
 
 #### [435. 无重叠区间](https://leetcode-cn.com/problems/non-overlapping-intervals/)
 
@@ -146,7 +146,7 @@ public:
 
 :zap: 注意：根据实际情况判断按区间开头排序还是按区间结尾排序。
 
-## 1.3 自练题
+### 1.3 自练题
 
 #### [605. 种花问题](https://leetcode-cn.com/problems/can-place-flowers/)
 
@@ -435,7 +435,142 @@ public:
 
 #### [142. 环形链表 II](https://leetcode-cn.com/problems/linked-list-cycle-ii/)
 
+针对链表找环路的问题，可通过[快慢指针](https://zh.wikipedia.org/wiki/Floyd判圈算法)（Floyd 判圈法）以及Brent判圈算法解决。
 
+算法步骤：
+
+- 给定两个指针分别命名为 slow 和 fast，起始位置在链表的开头。每次 fast 前进两步，slow 前进一步。
+
+- **如果 fast可以走到尽头，那么说明没有环路**；**如果 fast 可以无限走下去，那么说明一定有环路**，且一定存在一个时刻 slow 和 fast 相遇。
+- <u>当 slow 和 fast 第一次相遇</u>时，我们将 fast 重新移动到链表开头，并让 slow 和 fast 每次都前进一步。<u>当 slow 和 fast 第二次相遇</u>时，相遇的节点即为环路的开始点。
+
+```cpp
+class Solution {
+public:
+    ListNode *detectCycle(ListNode *head) {
+        ListNode *fast = head, *slow = head;
+        // Floyd判圈算法：判断是否存在环路
+        while (fast != nullptr && fast->next != nullptr && slow != nullptr) {
+            fast = fast->next->next;
+            slow = slow->next;
+            // 如果存在，查找环路节点
+            if (fast == slow) {
+                fast = head;
+                while (fast != slow) {
+                    fast = fast->next;
+                    slow = slow->next;
+                }
+                return slow;
+            }
+        }
+        return nullptr;
+    }
+};
+```
+
+> 数学推导——[Leetcode题解)](https://leetcode-cn.com/problems/linked-list-cycle-ii/solution/huan-xing-lian-biao-ii-by-leetcode-solution/)
+
+<div align="center"> <img src="Figs/LeetCode101_3" width="600"/> </div><br>
+
+假设链表中环外部分的长度为 $a$ ，slow 指针进入环后，又走了 $b$ 的距离与 fast 相遇。此时 fast 已经在环中走了 $n$ 圈，因此它走过的总距离为：
+$$
+a+n*(b + c)+b=a+(n + 1)*b+n*c
+$$
+由题设知，fast 指针走过的距离为 slow 指针走过距离的 2 倍，因此有：
+$$
+a+(n + 1)*b+n*c=2(a+b)\\
+\Rightarrow a=c+(n-1)*(b+c)
+$$
+由此可得，从相遇点到入环点的距离加上 $n-1$ 圈的环长，恰好等于从链表头部到入环点的距离。
+
+### 2.4 滑动窗口
+
+#### [76. 最小覆盖子串](https://leetcode-cn.com/problems/minimum-window-substring/)
+
+思路：两个指针 $l$ 和 $r$ 都是从最左端向最右端移动，且  $l$ 的位置一定在  $r$  的左边或重合。
+
+注意本题虽然在 for 循环里出现了一个 while 循环，但是因为 while 循环负责移动 $l$ 指针，且 $l$ 只会从左到右移动一次，因此总时间复杂度仍然是 *O*(*n*)。
+
+本题使用了<u>长度为 128 的数组来映射字符</u>，也可以用<u>哈希表</u>替代；其中 chars 表示目前每个字符缺少的数量，flag 表示每个字符是否在字符串 t 中存在。
+
+**如何判断当前的窗口包含 t 中所有的字符？**
+
+用一个哈希表表示 t 中所有的字符以及它们的个数，用一个哈希表动态维护窗口中所有的字符以及它们的个数，如果这个动态表中包含 t 的哈希表中的所有字符，并且对应的个数都不小于 t 的哈希表中各个字符的个数。
+
+```cpp
+class Solution {
+public:
+    string minWindow(string s, string t) {
+        vector<int> chars(128, 0);
+        vector<bool> flag(128, false);
+        // 先统计T 中的字符情况
+        for (int i = 0; i < t.size(); ++i) {
+            flag[t[i]] = true;
+            ++chars[t[i]];
+        }
+        // 移动滑动窗口，不断更改统计数据
+        int cnt = 0, l = 0, min_l = 0, min_size = s.size() + 1;
+        for (int r = 0; r < s.size(); ++r) {
+            if (flag[s[r]]) {
+                if (--chars[s[r]] >= 0) {
+                    ++cnt;
+                }
+                // 若目前滑动窗口已包含T中全部字符
+                // 尝试将 l 右移，在不影响结果的情况下获得最短字符串
+                while (cnt == t.size()) {
+                    if (r - l + 1 < min_size) {
+                        min_l = l;
+                        min_size = r - l + 1;
+                    }
+                    if (flag[s[l]] && ++chars[s[l]] > 0) {
+                        --cnt;
+                    }
+                    ++l;
+                }
+            }
+        }
+        return min_size > s.size() ? "" : s.substr(min_l, min_size);
+    }
+};
+```
+
+
+
+> [LeetCode官方题解(更易懂)](https://leetcode-cn.com/problems/minimum-window-substring/solution/zui-xiao-fu-gai-zi-chuan-by-leetcode-solution/)
+
+### 1.3 自练题
+
+#### [633. 平方数之和](https://leetcode-cn.com/problems/sum-of-square-numbers/)
+
+**思路**：假设 $left ≤ right$，初始化 $left = 0, right = \sqrt c$，当 $left=right$ 时查找结束，如果此时仍然没有找到整数符合要求的 $left$ 和 $right$ 则说明没有。
+
+```cpp
+class Solution {
+public:
+    bool judgeSquareSum(int c) {
+        long left = 0, right = (int)sqrt(c);
+        while (left <= right) {
+            long sum = left * left + right * right;
+            if (sum == c)   return true;
+            else if (sum < c)   ++left;
+            else --right;
+        }
+        return false;
+    }
+};
+```
+
+#### [680. 验证回文字符串 Ⅱ](https://leetcode-cn.com/problems/valid-palindrome-ii/)
+
+Two Sum 题目的变形题之二。
+
+
+
+
+
+#### [524. 通过删除字母匹配到字典里最长单词](https://leetcode-cn.com/problems/longest-word-in-dictionary-through-deleting/)
+
+归并两个有序数组的变形题。
 
 
 
