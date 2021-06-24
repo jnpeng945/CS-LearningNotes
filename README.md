@@ -34,6 +34,7 @@
 - [MySQL 安装教程](https://github.com/jnpeng945/CS-LearningNotes/blob/master/数据库/MySQL安装教程.md)
 - [MySQL基础](https://github.com/jnpeng945/CS-LearningNotes/blob/master/数据库/MySQL基础.md)
 - [MySQL 必知必会_笔记](https://github.com/jnpeng945/CS-LearningNotes/blob/master/数据库/MySQL必知必会.md)
+- [SQL练习](https://github.com/jnpeng945/CS-LearningNotes/blob/master/数据库/SQL练习.md)
 
 
 
