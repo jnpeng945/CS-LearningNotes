@@ -538,7 +538,7 @@ public:
 
 > [LeetCode官方题解(更易懂)](https://leetcode-cn.com/problems/minimum-window-substring/solution/zui-xiao-fu-gai-zi-chuan-by-leetcode-solution/)
 
-### 1.3 自练题
+### 2.5 自练题
 
 #### [633. 平方数之和](https://leetcode-cn.com/problems/sum-of-square-numbers/)
 
@@ -564,7 +564,30 @@ public:
 
 Two Sum 题目的变形题之二。
 
-
+```cpp
+class Solution {
+public:
+    bool validPalindrome(string s) {
+        int i = 0, j = s.size() - 1;
+        while (i < j) {
+            if (s[i] != s[j]) {
+                return isPalindrome(s, i + 1, j) || isPalindrome(s, i, j - 1);
+            } else {
+                ++i;
+                --j;
+            }
+        }
+        return true;
+    }
+private:
+    bool isPalindrome(string s, int i, int j) {
+        for (int left = i, right = j; left < right; ++left, --right) {
+            if (s[left] != s[right])   return false;
+        }
+        return true;
+    }
+};
+```
 
 
 
@@ -572,11 +595,296 @@ Two Sum 题目的变形题之二。
 
 归并两个有序数组的变形题。
 
-
+```cpp
+class Solution {
+private:
+    bool isSubstr(string& s, string& target) {      // target 是否是字符串s的子字符串
+        int index1 = 0, index2 = 0;
+        while(index1 < s.length() && index2 < target.length()) {
+            if (s[index1] == target[index2]) {
+                index2++;		// 匹配 target 的一个字符
+            }
+            index1++;
+        }
+        return index2 == target.length();
+    }
+public:
+    string findLongestWord(string s, vector<string>& dictionary) {
+        string longestWord = "";
+        // 依次遍历dictionary
+        for (auto target : dictionary) {
+            int l1 = longestWord.size(), l2 = target.size();
+            if (l1 > l2 || (l1 == l2 && longestWord.compare(target) < 0)) {
+                continue;       // 长度最长且字典序最小的字符串
+            }
+            if (isSubstr(s, target)) {
+                longestWord = target;
+            }
+        }
+        return longestWord;
+    }
+};
+```
 
 
 
 ## 3 二分查找
+
+<u>二分查找</u> （二分法 or 折半查找）：每次查找时通过将待查找区间分成两部分并只取一部分继续查找，将查找的复杂度大大减少。对于一个长度为 $O(n)$ 的数组，二分查找的时间复杂度为 $O(log n)$。
+
+具体在代码中，二分查找时区间的左右端取开区间还是闭区间在绝大多数时候都可以，关于如何定义区间开闭性。这里有两个小诀窍：
+
+1. 尝试熟练使用一种写法，如左闭右开（满足 C++ 、Python 等语言的习惯）或者左闭右闭（便于处理边界条件），尽量只保持这一种写法；
+2. 在刷题时思考如果最后区间只剩下一个数或者两个数，自己的写法是否会陷入死循环，如果某种写法无法跳出死循环，则考虑尝试另一种写法。
+
+二分查找可以看成双指针的一种特殊情况。双指针类型的题，指针通常是一步一步移动的，二分查找里，指针每次移动半个区间长度。
+
+
+
+**二分查找的三种写法：**
+
+<u>二分法关键在于掌握</u>：退出循环时，`left` 和 `right` 的位置关系。
+
+| 形式                     | 结论与建议                                                   |
+| ------------------------ | ------------------------------------------------------------ |
+| while (left <= right)    | 简单问题用，在循环体里能找到答案以后退出。                   |
+| while (left < right)     | 复杂问题用，把答案留到退出循环后再判断。解决二分问题的利器，尤其在边界问题用，这种方式考虑细节最少，但需要一定练习才能灵活运用。 |
+| while (left + 1 < right) | 不建议用，本质上和 while (left <= right) 写法一样，盲目套用反而学不会二分。 |
+
+
+
+`while(left < right)` 写法的优势在于退出循环时 `left` 和 `right` 是重合`while(left < right)` 写法的 [参考题解](https://leetcode-cn.com/problems/search-insert-position/solution/te-bie-hao-yong-de-er-fen-cha-fa-fa-mo-ban-python-/) 。
+
+`while(left < right)` 和 `while(left <= right)`  写法的区别：
+
+- `while(left <= right)` 在退出循环时有 `left = right + 1`，即 `right` 在左，`left` 在右；
+- `while(left < right)` 在退出循环时，有 `left =right` 成立；
+
+经验是：如果要找的数的性质很简单，使用这种写法，在循环体找到了就退出；在一些复杂问题中，列如找一些边界的值（比如 34 题），用 `while(left < right)`  是更加简单的，将要找的数字放在最后，在退出循环以后做判断。最重要的是退出循环后有 `left = right` 成立，这种思考问题的方式不容易出错。
+
+`while(left < right)`  的写法难点在于理解：分支的取法决定中间数的取法。
+
+
+
+> [二分查找有几种写法？它们的区别是什么？ - 知乎](https://www.zhihu.com/question/36132386/answer/530313852)
+>
+> [二分查找 - 搜索插入位置 - 力扣](https://leetcode-cn.com/problems/search-insert-position/solution/te-bie-hao-yong-de-er-fen-cha-fa-fa-mo-ban-python-/)
+
+
+
+### 3.1 求开方
+
+#### [69. x 的平方根](https://leetcode-cn.com/problems/sqrtx/)
+
+**解法1**：如果一个数 $a$ 的平方大于 $x$，那 $a$ 一定不是 $x$ 的平方根，我们下一轮需要在 $[0, a-1]$ 区间内继续查找 $x$ 的平方根。其中，为了防止除以 0，我们将 $a = 0$ 的情况单独考虑，然后对区间 $[1, a]$ 进行二分查找。
+
+```cpp
+class Solution {
+public:
+    int mySqrt(int x) {
+        if (x == 0) return 0;
+        if (x == 1) return 1;
+        int l = 1, r = x / 2;
+        while (l < r) {
+            int mid = l + (r - l + 1) / 2;      //  (l + r) / 2 的结果向上取整
+            if (mid  > x / mid)     r = mid - 1;    // [left , mid - 1]
+            else l = mid;                       // 下一轮搜索区间为 [mid, right]
+        }
+        return l;
+    }
+};
+```
+
+**解法2**：牛顿迭代法。公式为 $x_{n + 1} = x_n-f(x_n)/f^{\prime}\left(x_{n}\right)$ 。给定 $f(x)=x^2-a=0$，这里的迭代公式为 $x_{n + 1}=(x_n+a/x_{n})/2$。
+
+```cpp
+class Solution {
+public:
+    int mySqrt(int x) {
+        long a = x;
+        while (a * a > x) {
+            a = (a + x / a) / 2;
+        }
+        return a;
+    }
+};
+```
+
+
+
+### 3.2 查找区间
+
+#### [34. 在排序数组中查找元素的第一个和最后一个位置](https://leetcode-cn.com/problems/find-first-and-last-position-of-element-in-sorted-array/)
+
+采用 `while(left <= right)` 这种写法，并分析如何在循环体中设置 $left$ 和 $right$ ，以及应该返回 $left$ 和 $right$ ，即怎样思考边界问题。
+
+<u>首先，查找 target 出现的第一个位置。</u>
+
+二分查找的基本用法是在一个有序数组里查找目标元素，具体是看区间中间元素的值 $nums[mid]$ 和 $target$ 的大小关系。
+
+- 若 $nums[mid] =target$ ，直接返回；
+- 若 $nums[mid]<target$，往右边查找；
+- 若 $nums[mid]>target$，往右边查找；
+
+具体到本题中，由于一个元素出现多次，在讨论时我们需要进行调整：
+
+- 如果当前遍历到的元素 **等于** $target$ ，那么当前元素可能是 $target$ 出现的第1 个位置，于是我们在左边 $[left,mid-1]$  继续查找。
+- 如果当前遍历到的元素 **严格大于** $target$ ，那么我们在 $mid$ 左边 $[left,mid-1]$ 继续查找 $target$ 出现的第1 个位置。
+- 如果当前遍历到的元素 **严格小于** $target$ ，那么我们在 $mid$ 右边 $[mid+1,right]$ 继续查找 $target$ 出现的第1 个位置。
+
+
+
+```cpp
+// 查找 target 第1次出现的位置
+int findFirstPosition(vector<int> &nums, int target) {
+    int left = 0, right = nums.length() - 1;
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        if (nums[mid] == target) {			// 继续在左边找[left, mid - 1]
+            right = mid - 1;
+        } else if (nums[mid] < target) {	// [mid + 1, right]
+            left = mid + 1;
+        } else {	// 继续在左边找 [left, mid - 1]
+            right = mid - 1;
+        }
+    }
+    // 此时 left 和 right 的位置关系是 [right, left]，注意left 才是第1次元素出现的位置
+    // 因此需要一次特判
+    if (left != nums.size() && nums[left] == target) {
+        return left;
+    }
+    return -1;
+}
+
+
+// 查找 target 最后1次出现的位置
+int findLastPosition(vector<int> &nums, int target) {
+    int left = 0, right = nums.size() - 1;
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        if (nums[mid] == target) {			// 右边继续找[mid + 1, right]
+            left = mid + 1;
+        } else if (nums[mid] < target) {	// 右边继续找[mid + 1, right]
+            left = mid + 1;
+        } else {		// 左边继续找 [left, mid - 1]
+            right = mid - 1;
+        }
+    }
+    return right;
+}
+```
+
+**注意**：查找 $target$ 最后一个位置时无需讨论不存在的情况，因为先执行了 $findFirstPosition()$ 函数，如果该函数返回 $-1$ ，显然知道数组中不存在目标元素，可以直接返回 $[-1, -1]$。
+
+```cpp
+// 主调函数
+if (nums.size() == 0) {
+    return {-1, -1};
+}
+int firstPosition = findFirstPosition(nums, target);
+// 如果第1次出现位置找不到，肯定不存在最后1次出现的位置
+if (firstPosition == -1) {
+    return {-1, -1};
+}
+int lastPosition = findLastPosition(nums, target);
+return {firstPosition, lastPosition};
+```
+
+
+
+方法2：不利用 $findFirstPosition()$  结果的版本，和完整代码 1 没有本质上的区别。注意分支逻辑中有 $right = mid - 1$ ，因此 $right$ 有可能等于 $-1$ 。所以退出循环以后要判断的逻辑是：
+
+```cpp
+if (right != -1 && nums[right] == target) {
+    return right;
+}
+```
+
+完整的代码如下：
+
+```cpp
+class Solution {
+public:
+    vector<int> searchRange(vector<int>& nums, int target) {
+        if(nums.empty())    return{-1, -1};
+        int firstPosition = findFirstPosition(nums, target);
+        int lastPosition = findLastPosition(nums, target);
+        return {firstPosition, lastPosition};
+    }
+private:
+    int findFirstPosition(vector<int>& nums, int target) {
+        int lhs = 0, rhs = nums.size() - 1;
+        while (lhs <= rhs) {
+            int mid = lhs + (rhs - lhs) / 2;
+            if (nums[mid] == target) {  // 需要在 [left, mid - 1] 区间继续查找
+                rhs = mid - 1;
+            } else if (nums[mid] < target) {
+                lhs = mid + 1;
+            } else {
+                rhs = mid - 1;
+            }
+        }
+        // 此时 [right, left], 注意判断left 是否越界
+        if (lhs != nums.size() && nums[lhs] == target) {
+            return lhs;
+        }
+        return -1;
+    }
+    int findLastPosition(vector<int>& nums, int target) {
+        int lhs = 0, rhs = nums.size() - 1;
+        while (lhs <= rhs) {
+            int mid = lhs + (rhs - lhs) / 2;
+            if (nums[mid] == target) {  // 需要在 [mid + 1, right] 区间继续查找
+                lhs = mid + 1;
+            } else if (nums[mid] < target) {
+                lhs = mid + 1;
+            } else {
+                rhs = mid - 1;
+            }
+        }
+        if (rhs != -1 && nums[rhs] == target) {
+            return rhs;
+        }
+        return -1;
+    }
+};
+```
+
+### 3.3 旋转数组查找数字
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## 4 排序算法
 
