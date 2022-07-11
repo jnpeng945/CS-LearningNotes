@@ -852,41 +852,372 @@ private:
 
 ### 3.3 旋转数组查找数字
 
+解题思路：若 `nums[mid]<= nums[right]` ，则说明右区间是有序的；反之，则说明左区间是有序的。
 
+如果 `target` 位于有序区间内，我们可以对这个区间继续二分查找；反之，我们对另外一半区间继续二分查找。
 
+注意，因为数组中存在重复数字，若 `nums[mid]=nums[left]` ，由于我们不能确定是左区间全部相同，还是右区间完全相同。此时，我们 `++left`，然后继续二分查找。
 
+```cpp
+bool search(vector<int>& nums, int target) {
+    int left = 0, right = nums.size() - 1;
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        if (nums[mid] == target)        return true;
+        if (nums[left] == nums[mid]) {  // 无法判断哪个区间是增序的
+            ++left;
+        } else if (nums[mid] <= nums[right]) {
+            // 右区间是增序的
+            if (nums[mid] < target && target <= nums[right]) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        } else {
+            // 左区间是增序的
+            if (nums[left] <= target && target < nums[mid]) {
+                right = mid - 1;
+            } else {
+                left = mid;
+            }
+        }
+    }
+    return false;
+}
+```
 
+### 3.4 自练题
 
+#### [154. 寻找旋转排序数组中的最小值 II](https://leetcode-cn.com/problems/find-minimum-in-rotated-sorted-array-ii/)
 
+思路：将 `nums[mid]` 和 `nums[right]` 进行比较，得到的结果有三种情况：
 
+- `<` ，说明 `nums[mid]` 是右侧的最小元素，我们忽略二分查找的右半部分；
+- `>` ，说明 `nums[mid]` 是最小值左侧的元素，我们忽略二分查找的左半部分；
+- `=` ，说明 存在重复元素，但我们不能确定 `nums[mid]` 是在最小值的左侧还是右侧，因此我们不能随意忽略某一部分元素。我们唯一可以确定的是，由于它们的值相同，无论 `nums[right]` 是不是最小值，都可以执行 `--right`，这是因为我们取 `mid` 时是向下取整。
 
+```cpp
+int findMin(vector<int>& nums) {
+    int left = 0, right = nums.size() - 1;
+    while (left < right) {
+        int mid = left + (right - left) / 2;
+        if (nums[mid] < nums[right]) {
+            right = mid;
+        } else if (nums[mid] > nums[right]) {
+            left = mid + 1;
+        } else {
+            --right;
+        }
+    }
+    return nums[right];
+}
+```
 
+#### [540. 有序数组中的单一元素](https://leetcode-cn.com/problems/single-element-in-a-sorted-array/)
 
+解法1：含有单个元素的子数组元素个数为奇数。
 
+- `nums[mid]` 的同一元素在右边，且 `mid` 分成两半的数组为<u>偶数</u>。将右子数组的第一个元素移除之后，则右子数组的元素个数变为<u>奇数</u>，应设置 `lo = mid + 2` 。
+- `nums[mid]` 的同一元素在右边，且 `mid` 分成两半的数组为<u>奇数</u>。将右子数组的第一个元素移除之后，则右子数组的元素个数变为<u>偶数</u>，应设置 `hi = mid -1` 。
+- `nums[mid]` 的同一元素在左边，且 `mid` 分成两半的数组为<u>偶数</u>。将左子数组的最后一个元素移除之后，则左子数组的元素个数变为<u>奇数</u>，应设置 `hi = mid -2` 。
+- `nums[mid]` 的同一元素在左边，且 `mid` 分成两半的数组为<u>奇数</u>。将左子数组的最后一个元素移除之后，则左子数组的元素个数变为偶数，应设置 `lo = mid +1` 。
 
+  ```cpp
+  int singleNonDuplicate(vector<int>& nums) {
+      int l = 0, r = nums.size() - 1;
+      while (l < r) {
+          int mid = l + (r - l) / 2;
+          int flag = (r - mid) % 2;   // flag 为 1 为奇数， 0 为偶数
+          if (nums[mid] == nums[mid + 1]) {
+              if (flag) {
+                  r = mid - 1;
+              } else {
+                  l = mid + 2;
+              }
+          } else if (nums[mid] == nums[mid - 1]){
+              if (flag) {
+                  l = mid + 1;
+              } else {
+                  r = mid - 2;
+              }
+          } else {
+              return nums[mid];
+          }
+      }
+      return nums[l];
+  }
+  ```
 
+解法2：异或运算
 
+```cpp
+int singleNonDuplicate(vector<int>& nums) {
+    int ans = 0;
+    for (const int &num : nums) {
+        ans ^= num;
+    }
+    return ans;
+}
+```
 
+解法3：设置 `l` 和 `r` 为数组的首尾，奇数长度数组的首尾元素索引都是偶数。
 
+- 首先，确保 `mid` 是偶数，如果是奇数，则将其减 1；
+- 然后，检查 `mid` 的元素是否与后面的索引相同。若相同，我们知道 `nums[mid]` 不是单个元素，且单个元素在 `mid` 之后。因此，设置 `l = mid + 2`；如果不相同，我们知道单个元素位于 `mid` ，或者在 `mid` 之前，因此将 `r = mid`。
+- 最后 `l=r` ，当前搜索空间为 1 个元素，那么该元素为单个元素。
 
+```cpp
+int singleNonDuplicate(vector<int>& nums) {
+    int l = 0, r = nums.size() - 1;
+    while (l < r) {
+        int mid = l + (r - l) / 2;
+        if (mid % 2 == 1) {
+            --mid;
+        }
+        if (nums[mid] == nums[mid + 1]) {
+            l = mid + 2;
+        } else {
+            r = mid;
+        }
+    }
+    return nums[l];
+}
+```
 
+#### [4. 寻找两个正序数组的中位数](https://leetcode-cn.com/problems/median-of-two-sorted-arrays/)
 
+核心思想：
 
+- 使用二分查找确定两个有序数组的分割线，中位数就由分割线左右两侧的元素决定；
+- 分割线性质：左右两边的元素个数相等（这里忽略两个数组长度之和与奇偶性的差异）；
+- 分割线左边所有元素 `≤` 分割线右边所有元素；
+- 由于分割线两边元素个数相等，挪动分割线就会有此消彼长的现象，所以使用二分法定位。
 
+**二分查找：**
 
+1. 只有一个有序数组的时候中位数的性质
 
+   从中位数定义出发，在只有一个有序数组时：
 
+   - 如果数组的元素个数是<u>偶数</u>，中位数就是数组分割线两边的两个元素的平均值；
+   - 如果数组的元素个数是<u>奇数</u>，我们让分割线左边多一个元素，此时分割线的左边的那个元素就是这个有序数组的中位数；
 
+2. 两个有序数组的时候中位数的性质
 
+   - 当数组的总长度为<u>偶数</u>的时候，分割线左右的数字个数总和相等；当数组的总长度为<u>奇数</u>时，分割线左边数字个数比右边多1个；
+   - 分割线左边所有元素都小于等于分割线右边的所有元素；
 
+   如果这条分割线可以找到，那么中位数就可以确定，同样得分奇偶性：
 
+   - 当数组的总长度为偶数时，中位数就是分割线左边的最大值和右边的最小值的平均数；
+   - 当数组的总长度为奇数时，中位数就是分割线左边的最大值。因此在数组长度是奇数的时候，中位数就是分割线左边的最大值。
 
+   由于两个数组本身都是有序数组，因此我们需要判定交叉关系中，是否满足左边依然小于等于右边即可，即
 
+   - 第1个数组分割线左边的数 `≤` 第2个数组分割线右边的数；
+   - 第2个数组分割线左边的数 `≤` 第1个数组分割线右边的数；
 
+3. 通过不断缩减搜索区间确定分割线的位置
+
+   分割线左边的元素总数是固定的，我们只需确定1个数组上元素的位置，另一个位置自然就可以确定。
+
+   - 当数组的总长度为偶数时，左边共有 `(nums1.length() + nums2.length())/ 2` 个元素；
+   - 当数组的总长度为奇数时，左边共有 `(nums1.length() + nums2.length()) / 2 + 1` 个元素；
+   - 改进：两种情况下，左边元素个数都可以表述为： `(nums1.length() + nums2.length() + 1) / 2 ` 个元素；（上取整）
+
+4. 简化问题、细化算法流程
+
+   问题重述：在其中一个数组中找到 `i` 个元素，则另一个数组的元素个数就是 `(len(nums1) + len(nums2) + 1) / 2 - i` 。
+
+   至于找 `i` 个元素，可先找索引为 `i` 的元素，因为下标是从 0 开始编号，因此编号为 `i` 的元素，就是前面有 `i` 个元素。因此，`i` 是第1个数组分割线右边的第一个元素。
+
+   <u>情况1</u>：此时分割线左边的元素总数比右边多1，但是第 1 个数组分割线右边第 1 个数 6 小于第 2 个数组分割线左边第 1 个数 8。说明，分割线要右移。
+
+   <div align="center"> <img src="Figs/LeetCode101_4" width="600"/> </div><br>
+
+   <u>情况2</u>：此时分割线左边的元素总数比右边多 1，但是第 1 个数组分割线左边第1个数8大于第2个数组分割线左边第1个数7。说明，第1个数组的分割线要左移。
+
+   <div align="center"> <img src="Figs/LeetCode101_5.png" width="600"/> </div><br>
+
+5. 特殊情况
+
+   假设我们要在一个短的数组上搜索 `i` 。搜索过程中，我们需要比较分割线左边的数和右边的数。`nums[i]、nums[i - 1]、nums[j]、nums[j - 1]`，因此这几个数的下标不能越界。
+
+   - 考虑`nums1` 
+     - 当`i=0 ` 时，对应数组 `nums1` 在分割线左边为空，可设置 `nums1_left_max=负无穷`；
+     -  当 `i=m` 时，对应数组 `nums1` 在分割线右边空，可以设置 `nums1_right_min=正无穷`。
+
+   - 考虑 `nums2` 
+     - 当 `j=0` 时，对应数组 `nums2` 在分割线左边为空，可设置 `nums_left_max=负无穷`。
+     - 当 `j=n` 时，对应数组 `nums2` 在分割线右边为空，可设置 `nums2_right_min=正无穷`  。
+
+```cpp
+double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
+    if (nums1.size() > nums2.size()) {
+        vector<int> temp = nums1;
+        nums1 = nums2;
+        nums2 = temp;
+    }
+    int m = nums1.size();
+    int n = nums2.size();
+    // 分割线左边的所有元素需满足的个数为 m + (n - m + 1) / 2
+    int totalLeft = (m + n + 1) / 2;
+    // 在 nums1 的区间 [0, m] 内查找恰当的分割线
+    // 满足交叉大小比 nums1[i - 1] <= nums2[j] && nums2[j - 1] <= nums1[i]
+    int left = 0, right = m;
+    while (left < right) {
+        int i = left + (right - left + 1) / 2;
+        int j = totalLeft - i;
+        if (nums1[i - 1] >nums2[j]) {
+            // 下一轮搜索区间为 [left, i - 1]
+            right = i - 1;
+        } else {
+            // 下一轮搜索区间为 [i, right]
+            left = i;
+        }
+    }
+    int i = left;
+    int j = totalLeft - i;
+    int nums1LeftMax = i == 0? INT_MIN : nums1[i - 1];
+    int nums1RightMin = i == m ? INT_MAX : nums1[i];
+    int nums2LeftMax = j == 0 ? INT_MIN : nums2[j - 1];
+    int nums2RightMin = j == n ? INT_MAX : nums2[j];
+    if (((m + n) % 2) == 1) {
+        return max(nums1LeftMax, nums2LeftMax);
+    } else {
+        return (double)(max(nums1LeftMax, nums2LeftMax) + min (nums1RightMin, nums2RightMin)) / 2;
+    }
+}
+```
+
+> [二分查找](https://leetcode-cn.com/problems/median-of-two-sorted-arrays/solution/he-bing-yi-hou-zhao-gui-bing-guo-cheng-zhong-zhao-/)
 
 
 
 ## 4 排序算法
+
+### 4.1 常用排序算法
+
+#### 快速排序
+
+```cpp
+void quickSort(vector<int> &nums, int l, int r) {
+    if (l + 1 >= r) {
+        return;
+    }
+    int first = l, last = r - 1, key = nums[first];
+    while (first < last) {
+        while (first < last && nums[last] >= key) {
+            --last;
+        }
+        nums[first] = nums[last];
+        while (first < last && nums[first] <= key) {
+            ++first;
+        }
+        nums[last] = nums[first];
+    }
+    nums[first] = key;
+    quickSort(nums, l, first);
+    quickSort(nums, first + 1, r);
+}
+```
+
+#### 归并排序
+
+```cpp
+void mergeSort(vector<int> &nums, int l, int r, vector<int> &temp) {
+    if (l + 1 >= r) {
+        return;
+    }
+    // divide
+    int m = l + (r - l) / 2;
+    mergeSort(nums, l, m, temp);
+    mergeSort(nums, m, r, temp);
+    // conquer
+    int p = l, q = m, i = l;
+    while (p < m || q < r) {
+        if (q >= r || (p < m && nums[p] <= nums[q])) {
+            temp[i++] = nums[p++];
+        } else {
+            temp[i++] = nums[q++];
+        }
+    }
+    for(int i = l; i < r; ++i) {
+        nums[i] = temp[i];
+    }
+}
+```
+
+#### 插入排序
+
+```cpp
+void insertionSort(vector<int> &nums, int n) {
+    for (int i = 0; i < n; ++i) {
+        for (int j = i; j > 0 && nums[j] < nums[j - 1]; --j) {
+            swap(nums[j], nums[j - 1]);
+        }
+    }
+}
+```
+
+#### 冒泡排序
+
+```cpp
+void bubbleSort(vector<int> &nums, int n) {
+    bool swapped;
+    for (int i = 1; i < n; ++i) {
+        swapped = false;
+        for (int j = 1; j < n - i + 1; ++j) {
+            if (nums[j] < nums[j - 1]) {
+                swap(nums[j], nums[j - 1]);
+                swapped = true;
+            }
+        }
+        if (!swapped) {
+            break;
+        }
+    }
+}
+```
+
+#### 选择排序
+
+```cpp
+void selectionSort(vector<int> &nums, int n) {
+    int mid;
+    for (int i = 0; i < n - 1; ++i) {
+        mid = i;
+        for (int j = i + 1; j < n; ++j) {
+            if (nums[j] < nums[mid]) {
+                mid = j;
+            }
+        }
+        swap(nums[mid], nums[i]);
+    }
+}
+```
+
+### 4.2 快速选择
+
+#### [215. 数组中的第K个最大元素](https://leetcode-cn.com/problems/kth-largest-element-in-an-array/)
+
+分析：<u>快速排序</u>一般用于求解 k-th Element 问题，可以在 $O(n)$ 时间复杂度，$O(1)$ 空间复杂度完成求解工作。快速选择的实现和快速排序相似，不过只需要找到第 k 大的 pivot 即可，不需要对其左右再进行排序。与快速排序一样，快速选择一般需要先打乱数组，否则最坏情况下时间复杂度为 $O(n^2)$ 。
+
+```cpp
+// z
+```
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## 5 BFS & DFS
 

@@ -10,7 +10,7 @@
 
 - [C++简介及其环境配置](https://github.com/jnpeng945/CS-LearningNotes/blob/master/C++/C++简介及其环境配置.md)
 
-- [C++ Primer 笔记](https://github.com/jnpeng945/CS-LearningNotes/blob/master/C++/0%20README%20C++%20Primer%205.md)
+- [C++ Primer 笔记](https://github.com/jnpeng945/CS-LearningNotes/blob/master/C++/C++Primer5_README.md)
 
 
 
@@ -56,3 +56,18 @@
 - [Nowcoder专项练习题](https://github.com/jnpeng945/CS-LearningNotes/blob/master/面试题/Nowcoder专项练习题.md)
 - [互联网公司面试题](https://github.com/jnpeng945/CS-LearningNotes/blob/master/面试题/互联网公司面试题.md)
 
+
+
+# 资源
+
+- Linux 网络编程视频教程：[地址](https://www.bilibili.com/video/BV1eb411F74G?p=1)
+
+- C++ 11 并发与多线程视频课程：[地址](https://www.bilibili.com/video/BV1Yb411L7ak) [笔记](https://blog.csdn.net/qq_38231713/category_10001159.html)
+- Linux 进程间通信：[地址](https://www.bilibili.com/video/BV1tJ41117ty?p=1)
+- 面经总结：[地址](https://github.com/834810071/IE)
+
+
+
+网络IO https://834810071.github.io/2021/03/15/%E7%BD%91%E7%BB%9CIO/#more
+
+Http和Https网络协议 https://834810071.github.io/2021/03/16/Http%E5%92%8CHttps%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/#more
